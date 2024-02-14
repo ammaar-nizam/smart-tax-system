@@ -1,0 +1,7 @@
+.d-container{
+    justify-content: space-around;
+    gap: 1rem;
+}
+.d-container>img{
+    width: 9rem;
+}
