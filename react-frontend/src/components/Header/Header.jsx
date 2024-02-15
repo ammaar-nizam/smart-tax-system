@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Header.css";
+
 const Header = () => {
+
   return (
     <section className="h-wrapper">
       <div className="flexCenter paddings innerWidth h-container">
         <div className="h-title">
-          <img src="./logo.png" alt="logo"/>
+          <img src="./logo.png" alt="logo" />
           <h1>Inland Revenue Department</h1>
         </div>
         <div className="flexCenter h-menu">

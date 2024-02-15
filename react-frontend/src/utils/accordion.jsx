@@ -1,23 +1,18 @@
-import { HiShieldCheck } from "react-icons/hi";
-import { MdCancel, MdAnalytics } from "react-icons/md";
 const data = [
   {
-    icon: <HiShieldCheck/>,
-    heading: "Best interest rates on the market",
+    heading: "Estate Duty Tax",
     detail:
-      "Exercitation in fugiat est ut ad ea cupidatat ut in cupidatat occaecat ut occaecat consequat est minim minim esse tempor laborum consequat esse adipisicing eu reprehenderit enim.",
+      "Estate Duty Tax is a tax imposed by the government on the purchase of land and properties with values over a certain threshold. This tax is payable to Inland Revenue Department and must be remitted within 14 days of the completion of a property purchase or transfer in Sri Lanka.",
   },
   {
-    icon: <MdCancel />,
-    heading: "Prevent unstable prices",
+    heading: "Gift Tax",
     detail:
-      "Exercitation in fugiat est ut ad ea cupidatat ut in cupidatat occaecat ut occaecat consequat est minim minim esse tempor laborum consequat esse adipisicing eu reprehenderit enim.",
+      "A gift tax is a federal tax imposed by the Inland Revenue Department on individual taxpayers who transfer property to someone else without receiving anything of substantial value in return. A gift can include cash, real estate, and other forms of property. ",
   },
   {
-    icon: <MdAnalytics />,
-    heading: "Best price on the market",
+    heading: "Inheritance Tax",
     detail:
-      "Exercitation in fugiat est ut ad ea cupidatat ut in cupidatat occaecat ut occaecat consequat est minim minim esse tempor laborum consequat esse adipisicing eu reprehenderit enim.",
+      "An inheritance tax is a tax imposed by the government on the recipients of inherited assets. In contrast to an estate tax, an inheritance tax is paid by the recipient of a bequest rather than the estate of the deceased."
   },
 ];
 export default data;

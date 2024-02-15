@@ -10,7 +10,8 @@ const Hero = () => {
             <h1>
               Smart <br />
               Tax
-              <br />System
+              <br />
+              System
             </h1>
           </div>
           <div className="flexColStart hero-des">
@@ -19,7 +20,23 @@ const Hero = () => {
           </div>
         </div>
         {/*Right */}
-        <div className="hero-right"></div>
+        <div className="flexColStart hero-right">
+          <div className="hero-func-title">
+            <h2>What You Can Do</h2>
+          </div>
+          <div className="flexColStart hero-func">
+            <span>Estate duty tax return filing</span>
+            <span>Gift tax return filing</span>
+            <span>Inheritance tax return filing</span>
+            <span>Easy tax payment</span>
+            <span>Value Assessment</span>
+            <span>Search property ownership information</span>
+            <span>Search house prices</span>
+            <span>Gift and Inheritance related document records</span>
+            <span>Read educational resources</span>
+            <span>Take me to Land Registry</span>
+          </div>
+        </div>
       </div>
     </section>
   );
