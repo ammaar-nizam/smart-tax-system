@@ -1,5 +1,6 @@
 import React from 'react'
 import './Departments.css'
+import { addScaleCorrector } from 'framer-motion'
 const Departments = () => {
   return (
     <section className="d-wrapper">
