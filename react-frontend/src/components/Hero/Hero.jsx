@@ -18,7 +18,7 @@ const Hero = () => {
             <span>Taxes Calculations and Management</span>
           </div>
         </div>
-        {/*Right Section*/}
+        {/*Right */}
         <div className="hero-right"></div>
       </div>
     </section>
