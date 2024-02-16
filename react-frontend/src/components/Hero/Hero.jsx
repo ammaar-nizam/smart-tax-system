@@ -1,11 +1,20 @@
 import React from "react";
+import { motion } from "framer-motion";
 import "./Hero.css";
 const Hero = () => {
   return (
     <section className="hero-wrapper">
       <div className="flexCenter paddings innerWidth hero-container">
         {/*Left Section*/}
-        <div className="flexColStart hero-left">
+        <motion.div
+          className="flexColStart hero-left"
+          initial={{ y: "2rem", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{
+            duration: 1,
+            type: "spring",
+          }}
+        >
           <div className="hero-title">
             <h1>
               Smart <br />
@@ -18,9 +27,17 @@ const Hero = () => {
             <span>Automating Estate Duty, Gift, and Inheritance</span>
             <span>Taxes Calculations and Management</span>
           </div>
-        </div>
+        </motion.div>
         {/*Right */}
-        <div className="flexColStart hero-right">
+        <motion.div
+          className="flexColStart hero-right"
+          initial={{ y: "2rem", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{
+            duration: 1,
+            type: "spring",
+          }}
+        >
           <div className="hero-func-title">
             <h2>What You Can Do</h2>
           </div>
@@ -36,7 +53,7 @@ const Hero = () => {
             <span>Read educational resources</span>
             <span>Take me to Land Registry</span>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

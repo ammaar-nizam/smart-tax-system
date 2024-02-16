@@ -1,13 +1,11 @@
 .h-wrapper {
   z-index: 99;
-  position: sticky;
   top: 0;
 }
 
 .h-container {
   justify-content: space-between;
   padding-top: 1rem;
-  color: var(--secondary);
   padding-bottom: 1rem;
 }
 
@@ -34,6 +32,7 @@
     display: block;
   }
   .h-menu {
+    z-index: 99;
     color: var(--black);
     position: absolute;
     gap: 2rem;

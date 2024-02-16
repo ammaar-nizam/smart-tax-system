@@ -71,6 +71,10 @@
   .t-container {
     flex-direction: column;
   }
+  .image-container{
+    width: 95%;
+    height: 25rem;
+  }
 }
 
 @media (max-width: 768px) {
