@@ -9,8 +9,7 @@ import {
 } from "react-accessible-accordion";
 import "react-accessible-accordion/dist/fancy-example.css";
 import {
-  MdOutlineArrowDropDown,
-  MdOutlineArrowDropDownCircle,
+  MdOutlineArrowDropDown
 } from "react-icons/md";
 import data from "../../utils/accordion.jsx";
 import "./Tax.css";

@@ -1,0 +1,30 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model PracticeGuide {
+  id                Int         @id @default(autoincrement())
+  title             String      @unique
+  description       String?
+  content           String?     @db.Text
+  publicationDate   DateTime?   @map("publication_date")
+  author            Author      @relation(fields: [authorId], references: [id])
+  authorId          Int         @map("author_id")
+
+  @@map("practice_guide")
+}
+
+model Author {
+  id           Int      @id @default(autoincrement()) 
+  name         String
+  email        String?  @unique
+  organization String?
+  guides       PracticeGuide[]
+
+  @@map("author")
+}

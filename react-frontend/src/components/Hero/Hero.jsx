@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import "./Hero.css";
+import SearchBar from "../SearchBar/SearchBar";
 const Hero = () => {
   return (
     <section className="hero-wrapper">
@@ -27,6 +28,7 @@ const Hero = () => {
             <span>Automating Estate Duty, Gift, and Inheritance</span>
             <span>Taxes Calculations and Management</span>
           </div>
+          
         </motion.div>
         {/*Right */}
         <motion.div

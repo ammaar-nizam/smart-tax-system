@@ -11,7 +11,7 @@ const NewsLetter = () => {
             <br />
             Stay in the know with news, trends, and exciting announcements delivered straight to your inbox.
           </span>
-          <button className="button" href>
+          <button className="button">
             <a href="mailto:ammaarnizam31@gmail.com">Subscribe Now</a>
           </button>
         </div>
