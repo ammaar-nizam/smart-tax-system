@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="paddings innerWidth flexCenter footer-container">
         {/* left side */}
         <div className="flexColStart footer-left">
-          <img src="./logo.svg" alt="" width={80} />
+          <img src="./logo1.png" alt="" width={80} />
           <span className="secondaryText">
           The aim of the project, Smart Tax System, is to modernise and simplify <br />
           Sri Lanka's tax administration by automating computations for estate duty, <br />

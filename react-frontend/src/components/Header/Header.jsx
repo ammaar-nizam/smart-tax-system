@@ -19,7 +19,7 @@ const Header = () => {
       <div className="flexCenter paddings innerWidth h-container">
         <div className="h-title">
           <Link to="/">
-            <img src="./logo.svg" alt="logo" />
+            <img src="./logo1.png" alt="logo" />
           </Link>
           <h1>Inland Revenue Department</h1>
         </div>
