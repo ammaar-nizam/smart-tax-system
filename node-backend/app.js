@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import { authorRoute } from './routes/authorRoute.js';
+import { agentRoute } from './routes/agentRoute.js';
 import { guidanceRoute } from './routes/guidanceRoute.js';
 
 dotenv.config()
@@ -19,5 +19,5 @@ app.listen(PORT, ()=> {
     console.log(`Backend server is running on port ${PORT}!`);
 });
 
-app.use('/api/authors', authorRoute)
+app.use('/api/agents', agentRoute)
 app.use('/api/guides', guidanceRoute)

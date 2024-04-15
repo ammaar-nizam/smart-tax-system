@@ -3,7 +3,7 @@ import React from "react";
 export const SidebarData = [
   {
     title: "Estate duty tax return filing",
-    link: "/",
+    link: "/estate-duty-tax",
   },
   {
     title: "Gift tax return filing",

@@ -9,7 +9,7 @@ export const writePracticeGuidance = asyncHandler(async (req, res) => {
         description,
         content,
         publicationDate,
-        authorId
+        agentId
     } = req.body.data;
 
     console.log(req.body.data)
@@ -27,7 +27,7 @@ export const writePracticeGuidance = asyncHandler(async (req, res) => {
         description,
         content,
         publicationDate,
-        author: { connect: { id: authorId } }
+        agent: { connect: { id: agentId } }
       },
     });
     res.status(201).json({

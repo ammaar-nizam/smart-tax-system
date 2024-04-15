@@ -5,20 +5,25 @@ import Layout from "./components/Layout/Layout";
 import Services from "./pages/Services/Services";
 import Guidance from "./pages/Guidance/Guidance";
 import Feedback from "./pages/Feedback/Feedback";
+import EstateDutyTax from "./pages/EstateDutyTax/EstateDutyTax";
+import Sidebar from "./components/Sidebar/Sidebar";
+
 function App() {
   return (
-    <BrowserRouter>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<Website />} />
-            <Route path="/services" element={<Services/>} />
-            <Route path="/guidance" element={<Guidance/>} />
-            <Route path="/feedback" element={<Feedback/>} />
-          </Route>
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+    <div className="app">
+      <Sidebar/>
+      <main className="content">
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Website />} />
+          <Route path="/services" element={<Services/>} />
+          <Route path="/guidance" element={<Guidance/>} />
+          <Route path="/feedback" element={<Feedback/>} />
+          <Route path="/estate-duty-tax" element={<EstateDutyTax/>} />
+        </Route>
+      </Routes>
+      </main>
+    </div>
   );
 }
 

@@ -1,30 +1,109 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
+// prisma/schema.prisma
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
 }
 
-model PracticeGuide {
-  id                Int         @id @default(autoincrement())
-  title             String      @unique
-  description       String?
-  content           String?     @db.Text
-  publicationDate   DateTime?   @map("publication_date")
-  author            Author      @relation(fields: [authorId], references: [id])
-  authorId          Int         @map("author_id")
+model Agent {
+  id                         Int         @id @default(autoincrement())
+  agentName                  String?
+  businessRegistrationNumber String?     @unique
+  agentAddress               String?
+  agentTelephone             Int
+  agentEmail                 String?     @unique
+  agentUsername              String?     @unique
+  agentPassword              String?
+  vendors                    Vendor[]    @relation("VendorAgent")
+  purchasers                 Purchaser[] @relation("PurchaserAgent")
+  returns                    Return[]    @relation("AgentReturns")
 
-  @@map("practice_guide")
+  @@map("agent")
 }
 
-model Author {
-  id           Int      @id @default(autoincrement()) 
-  name         String
-  email        String?  @unique
-  organization String?
-  guides       PracticeGuide[]
+model Vendor {
+  id            Int           @id @default(autoincrement())
+  nic           String        @unique
+  vendorName    String?       @map("vendor_name")
+  vendorAddress String?       @map("vendor_address")
+  agentId       Int           @map("agent_id")
+  vendorAgent   Agent         @relation("VendorAgent", fields: [agentId], references: [id])
+  transactions  Transaction[] @relation("VendorTransaction")
 
-  @@map("author")
+  @@map("vendor")
+}
+
+model Purchaser {
+  id                  Int           @id @default(autoincrement())
+  nic                 String        @unique
+  purchaserName       String?       @map("purchaser_name")
+  purchaserAddress    String?       @map("purchaser_address")
+  dob                 DateTime
+  isFirstProperty     Boolean       @map("is_first_property")
+  isSriLankanResident Boolean       @map("is_sri_lankan_resident")
+  isCompany           Boolean       @map("is_company")
+  agentId             Int           @map("agent_id")
+  purchaserAgent      Agent         @relation("PurchaserAgent", fields: [agentId], references: [id])
+  transactions        Transaction[] @relation("PurchaserTransaction")
+
+  @@map("purchaser")
+}
+
+model Transaction {
+  id              Int       @id @default(autoincrement())
+  propertyAddress String?   @map("property_address")
+  type            String
+  consideration   Decimal
+  effectiveDate   DateTime  @map("effective_date")
+  vendorId        Int       @map("vendor_id")
+  purchaserId     Int       @map("purchaser_id")
+  vendor          Vendor    @relation("VendorTransaction", fields: [vendorId], references: [id])
+  purchaser       Purchaser @relation("PurchaserTransaction", fields: [purchaserId], references: [id])
+  return          Return?   @relation("TransactionReturns")
+
+  @@map("transaction")
+}
+
+model Return {
+  id                 Int         @id @default(autoincrement())
+  type               String
+  taxDue             Decimal     @map("tax_due")
+  submitDate         DateTime    @map("submit_date")
+  deadlineDate       DateTime    @map("deadline_date")
+  isPenaltyAdded     Boolean     @map("is_penalty_added")
+  status             String
+  transactionId      Int         @unique @map("transaction_id")
+  agentId            Int         @map("agent_id")
+  transactionReturns Transaction @relation("TransactionReturns", fields: [transactionId], references: [id])
+  agentReturns       Agent       @relation("AgentReturns", fields: [agentId], references: [id])
+  payment            Payment?    @relation("ReturnPayment")
+  penalties          Penalty[]   @relation("ReturnPenalty")
+
+  @@map("return")
+}
+
+model Payment {
+  id            Int      @id @default(autoincrement())
+  amount        Decimal
+  status        String
+  paidDate      DateTime @map("paid_date")
+  returnId      Int      @unique @map("return_id")
+  returnPayment Return   @relation("ReturnPayment", fields: [returnId], references: [id])
+
+  @@map("payment")
+}
+
+model Penalty {
+  id            Int      @id @default(autoincrement())
+  reason        String?
+  amount        Decimal
+  imposedDate   DateTime @map("imposed_date")
+  status        String
+  returnId      Int      @map("return_id")
+  returnPenalty Return   @relation("ReturnPenalty", fields: [returnId], references: [id])
+
+  @@map("penalty")
 }
