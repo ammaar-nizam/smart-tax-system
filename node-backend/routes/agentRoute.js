@@ -1,13 +1,8 @@
-import express from "express";
-import {
-  createAgent, getAllAgents, getAgentById,
-} from "../controllers/agentController.js";
-import jwtCheck from "../config/auth0Config.js";
+const agentController = require('../controllers/agentController')
 
-const router = express.Router();
+const router = require("express").Router();
 
-router.post('/create', createAgent);
-router.get('/:id', getAgentById);
-router.get('/', getAllAgents);
+router.post('/register', agentController.registerAgent);
+router.post('/login', agentController.loginAsAgent);
 
-export { router as agentRoute };
+module.exports = router;

@@ -1,14 +1,14 @@
-import asyncHandler from "express-async-handler";
-import { prisma } from "../config/prismaConfig.js";
-import CryptoJS from "crypto-js";
-import jwt from "jsonwebtoken";
+const CryptoJS = require("crypto-js");
+const jwt = require("jsonwebtoken");
+const prisma = require("../config/prismaConfig");
+const { validator, schemaForAgent } = require("../utils/validation");
 
-// Function to create an agent
-export const createAgent = asyncHandler(async (req, res) => {
+// Registering an agent
+function registerAgent(req, res) {
   const agent = {
     agentName: req.body.agentName,
     businessRegistrationNumber: req.body.businessRegistrationNumber,
-    agentAddress: req.body.agentEagentAddressmail,
+    agentAddress: req.body.agentAddress,
     agentTelephone: req.body.agentTelephone,
     agentEmail: req.body.agentEmail,
     agentUsername: req.body.agentUsername,
@@ -18,56 +18,94 @@ export const createAgent = asyncHandler(async (req, res) => {
     ).toString(),
   };
 
-  console.log("Creating an agent...");
+  // Validate user input
+  const validationResponse = validator.validate(
+    agent,
+    schemaForAgent
+  );
 
-  const agentExists = await prisma.agent.findUnique({
-    where: { businessRegistrationNumber: req.body.businessRegistrationNumber },
-  });
-  if (!agentExists) {
-    const createdAgent = await prisma.agent.create({ data: agent });
-    res.status(201).json({
-      message: "Agent created successfully.",
-      agent: createdAgent,
+  if (validationResponse !== true) {
+    res.status(400).json({
+      message: "Validation failed.",
+      errors: validationResponse,
     });
-  } else res.status(409).json({ message: "Agent already in database." });
-});
 
-// Function to get agent by id
-export const getAgentById = asyncHandler(async (req, res) => {
-  const id = req.params.id;
-
-  try {
-    const agentExists = await prisma.agent.findUnique({
-      where: { id: parseInt(id) },
-    });
-    if (agentExists) {
-      res.status(201).json(agentExists);
-    } else {
-      res.status(404).json({
-        message: "Agent not found",
+  } else {
+    prisma.agent.findUnique({ where: { businessRegistrationNumber: req.body.businessRegistrationNumber } })
+      .then((data) => {
+        if (data) {
+          res.status(409).json({
+            message: "An agent already exists with the same business registration number.",
+          });
+        } else {
+          prisma.agent.create({data: agent})
+            .then((createdAgent) => {
+              res.status(201).json({
+                message: "Agent created successfully.",
+                agent: createdAgent,
+              });
+            })
+            .catch((err) => {
+              res.status(500).json({
+                message: "Error creating the agent.",
+                error: err,
+              });
+            });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Unexpected error occured.",
+          error: err,
+        });
       });
-    }
-  } catch (err) {
-    res.status(500).json({
-      message: "Error retrieving the agent.",
-      error: err,
-    });
   }
-});
+}
 
-// Function to get all the agents
-export const getAllAgents = asyncHandler(async (req, res) => {
-  try {
-    const agents = await prisma.agent.findMany({
-      orderBy: {
-        id: "desc",
-      },
+// Logging in as an agent
+function loginAsAgent(req, res) {
+  prisma.agent.findUnique({ where: { agentUsername: req.body.agentUsername } })
+    .then((currentAgent) => {
+      if (currentAgent === null) {
+        res.status(401).json({
+          message: "Incorrect username.",
+        });
+      } else {
+        const hashedPassword = CryptoJS.AES.decrypt(
+          currentAgent.agentPassword,
+          process.env.PASSWORD_SECRET_KEY
+        );
+        const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+
+        OriginalPassword !== req.body.agentPassword &&
+          res.status(401).json("Incorrect password.");
+
+        const accessToken = jwt.sign(
+          {
+            id: currentAgent.id,
+            agentEmail: currentAgent.agentEmail,
+            agentUsername: currentAgent.agentUsername
+          },
+          process.env.JWT_SECRET_KEY,
+          { expiresIn: "30m" },
+          function (err, accessToken) {
+            res.status(200).json({
+              message:
+                "Authentication successful and logged in as an agent.",
+              accessToken: accessToken,
+            });
+          }
+        );
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Error logging in as agent.",
+        error: err,
+      });
     });
-    res.status(201).json(agents);
-  } catch (err) {
-    res.status(500).json({
-      message: "Error retrieving all agents.",
-      error: err,
-    });
-  }
-});
+}
+
+module.exports = {
+  registerAgent, loginAsAgent
+};
