@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+
+html,
+body,
+#root,
+.app,
+.content {
+  /* height: 100%; */
+  width: 100%;
+  /* font-family: 'Source Sans Pro', sans-serif; */
+  font-family: "Poppins", sans-serif;
+}
+
+/* body {
+  overflow-x: hidden;
+} */
+
+.app {
+  display: flex;
+  position: relative;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e0e0e0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-track:hover {
+  background: #555;
+}
+
+/* Image upload css */
+.img-upload-label {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px dotted grey;
+  border-radius: 20px;
+  width: full;
+  height: 7.5rem;
+  cursor: pointer;
+  font-size: large;
+}
+.img-upload-label span {
+  font-weight: lighter;
+  font-size: small;
+  padding-top: 0.5rem;
+}
+.img-upload-label input {
+  display: none;
+}
+.image img {
+  margin: auto;
+  width: 600px;
+
+  object-fit: cover;
+}
+.images {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.image {
+  justify-content: center;
+  align-items: center;
+  width: full;
+  height: 200px;
+  overflow: hidden;
+}
+.image-container {
+  position: relative;
+}
+.image.remove-btn {
+  display: block;
+  position: absolute;
+  top: -20px;
+  right: -30px;
+}
+.error {
+  color: red;
+  font-size: smaller;
+}
