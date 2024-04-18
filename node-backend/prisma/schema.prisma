@@ -126,8 +126,8 @@ model GiftReturn {
 model Beneficiary {
   id                  Int                      @id @default(autoincrement())
   nic                 String                   @unique
-  receiverName        String?                  @map("receiver_name")
-  receiverAddress     String?                  @map("receiver_address")
+  beneficiaryName        String?                  @map("beneficiary_name")
+  beneficiaryAddress     String?                  @map("beneficiary_address")
   dob                 DateTime
   isFirstProperty     Boolean                  @map("is_first_property")
   isSriLankanResident Boolean                  @map("is_sri_lankan_resident")
