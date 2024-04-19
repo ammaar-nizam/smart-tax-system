@@ -19,26 +19,29 @@ function registerAgent(req, res) {
   };
 
   // Validate user input
-  const validationResponse = validator.validate(
-    agent,
-    schemaForAgent
-  );
+  const validationResponse = validator.validate(agent, schemaForAgent);
 
   if (validationResponse !== true) {
     res.status(400).json({
       message: "Validation failed.",
       errors: validationResponse,
     });
-
   } else {
-    prisma.agent.findUnique({ where: { businessRegistrationNumber: req.body.businessRegistrationNumber } })
+    prisma.agent
+      .findUnique({
+        where: {
+          businessRegistrationNumber: req.body.businessRegistrationNumber,
+        },
+      })
       .then((data) => {
         if (data) {
           res.status(409).json({
-            message: "An agent already exists with the same business registration number.",
+            message:
+              "An agent already exists with the same business registration number.",
           });
         } else {
-          prisma.agent.create({data: agent})
+          prisma.agent
+            .create({ data: agent })
             .then((createdAgent) => {
               res.status(201).json({
                 message: "Agent created successfully.",
@@ -64,7 +67,8 @@ function registerAgent(req, res) {
 
 // Logging in as an agent
 function loginAsAgent(req, res) {
-  prisma.agent.findUnique({ where: { agentUsername: req.body.agentUsername } })
+  prisma.agent
+    .findUnique({ where: { agentUsername: req.body.agentUsername } })
     .then((currentAgent) => {
       if (currentAgent === null) {
         res.status(401).json({
@@ -84,14 +88,13 @@ function loginAsAgent(req, res) {
           {
             id: currentAgent.id,
             agentEmail: currentAgent.agentEmail,
-            agentUsername: currentAgent.agentUsername
+            agentUsername: currentAgent.agentUsername,
           },
           process.env.JWT_SECRET_KEY,
           { expiresIn: "30m" },
           function (err, accessToken) {
             res.status(200).json({
-              message:
-                "Authentication successful and logged in as an agent.",
+              message: "Authentication successful and logged in as an agent.",
               accessToken: accessToken,
             });
           }
@@ -106,6 +109,131 @@ function loginAsAgent(req, res) {
     });
 }
 
+// Get agent by Id
+function getAgentById(req, res) {
+  prisma.agent
+    .findUnique({ where: { id: parseInt(req.params.id) } })
+    .then((data) => {
+      if (data) {
+        res.status(200).json(data);
+      } else {
+        res.status(404).json({
+          message: "Agent not found",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Error retrieving the agent.",
+        error: err,
+      });
+    });
+}
+
+// Get agent by name
+function getAgentByName(req, res) {
+  const agentName = req.query.agentName;
+  prisma.agent
+    .findMany({ where: { agentName: { contains: agentName } } })
+    .then((agents) => {
+      if (agents) {
+        res.status(200).json(agents);
+      } else {
+        res.status(404).json({
+          message: "Agent not found",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Error retrieving the agent",
+        error: err,
+      });
+    });
+}
+
+// Get all agents
+function getAllAgents(req, res) {
+  prisma.agent
+    .findMany()
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Error retrieving all agents.",
+        error: err,
+      });
+    });
+}
+
+// Update agent by Id
+function updateAgentById(req, res) {
+  prisma.agent
+    .update({
+      where: { id: parseInt(req.params.id) },
+      data: {
+        agentName: req.body.agentName,
+        businessRegistrationNumber: req.body.businessRegistrationNumber,
+        agentAddress: req.body.agentAddress,
+        agentTelephone: req.body.agentTelephone,
+        agentEmail: req.body.agentEmail,
+        agentUsername: req.body.agentUsername,
+        agentPassword: CryptoJS.AES.encrypt(
+          req.body.agentPassword,
+          process.env.PASSWORD_SECRET_KEY
+        ).toString(),
+      },
+    })
+    .then((updatedAgent) => {
+      if (updatedAgent) {
+        res.status(200).json({
+          message: "Agent updated successfully.",
+          agent: updatedAgent,
+        });
+      } else {
+        res.status(404).json({
+          message: "Agent not found",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Error updating the agent.",
+        error: err,
+      });
+    });
+}
+
+// Delete agent by Id
+function deleteAgentById(req, res) {
+  prisma.agent
+    .delete({ where: { id: parseInt(req.params.id) } })
+    .then((data) => {
+      if (data) {
+        res.status(200).json({
+          message: "Agent deleted successfully.",
+        });
+      } else {
+        res.status(404).json({
+          message: "Agent not found",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Error deleting the agent.",
+        error: err,
+      });
+    });
+}
+
 module.exports = {
-  registerAgent, loginAsAgent
+  registerAgent,
+  loginAsAgent,
+  getAgentById,
+  getAgentByName,
+  getAllAgents,
+  updateAgentById,
+  deleteAgentById,
 };

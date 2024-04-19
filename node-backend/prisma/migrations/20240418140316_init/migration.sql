@@ -111,8 +111,8 @@ CREATE TABLE `gift_return` (
 CREATE TABLE `beneficiary` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `nic` VARCHAR(191) NOT NULL,
-    `receiver_name` VARCHAR(191) NULL,
-    `receiver_address` VARCHAR(191) NULL,
+    `beneficiary_name` VARCHAR(191) NULL,
+    `beneficiary_address` VARCHAR(191) NULL,
     `dob` DATETIME(3) NOT NULL,
     `is_first_property` BOOLEAN NOT NULL,
     `is_sri_lankan_resident` BOOLEAN NOT NULL,
