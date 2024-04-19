@@ -30,7 +30,7 @@ const Items = () => {
   }
 
   useEffect(() => {
-    document.title = "Products | ARTIMART";
+    document.title = "Products | SMART TAX";
 
     getProducts();
     

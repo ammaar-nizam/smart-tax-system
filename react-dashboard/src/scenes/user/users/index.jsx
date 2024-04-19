@@ -25,7 +25,7 @@ const Users = () => {
 
   // change title
   useEffect(() => {
-    document.title = "Users | ARTIMART";
+    document.title = "Agents | SMART TAX";
     getUsers();
   });
 

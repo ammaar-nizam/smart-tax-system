@@ -32,7 +32,7 @@ const UserCreateForm = () => {
   // const [zipCode, setZipCode] = useState('');
 
   useEffect(() => {
-    document.title = "Create Users | ARTIMART";
+    document.title = "Create Agents | SMART TAX";
   });
 
   const initialValues = {

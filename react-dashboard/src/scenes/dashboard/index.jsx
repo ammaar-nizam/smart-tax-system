@@ -50,7 +50,7 @@ const Dashboard = () => {
   // getDataCount();
   // change title
   useEffect(() => {
-    document.title = "Dashboard | ARTIMART";
+    document.title = "Dashboard | SMART TAX";
 
     getUsers();
   });

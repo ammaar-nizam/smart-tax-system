@@ -25,7 +25,7 @@ const UserUpdateForm = () => {
 
   // change title
   useEffect(() => {
-    document.title = "Update Users | ARTIMART";
+    document.title = "Update Agents | SMART TAX";
   });
 
   const initialValues = {

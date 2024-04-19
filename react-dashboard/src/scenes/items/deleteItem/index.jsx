@@ -29,7 +29,7 @@ const DeleteItem = () => {
 
   // change title
   useEffect(() => {
-    document.title = "Delete Product | ARTIMART";
+    document.title = "Delete Product | SMART TAX";
   });
 
   const initialValues = {

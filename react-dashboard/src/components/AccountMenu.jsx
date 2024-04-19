@@ -72,12 +72,6 @@ export default function AccountMenu() {
       >
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
-            <ShoppingCartCheckoutIcon fontSize="small" />
-          </ListItemIcon>
-          Continue Shopping
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <ListItemIcon>
             <PersonOutlinedIcon fontSize="small" />
           </ListItemIcon>
           My Account

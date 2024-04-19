@@ -19,7 +19,7 @@ const Orders = () => {
   
   // change title
   useEffect(() => {
-    document.title = "Orders | ARTIMART";
+    document.title = "Orders | SMART TAX";
   });
   
   // console.log(mockDataContacts)
