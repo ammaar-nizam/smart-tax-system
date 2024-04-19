@@ -5,6 +5,17 @@ const cookieParser = require('cookie-parser');
 const cors = require("cors");
 
 const agentRoute = require('./routes/agentRoute');
+const beneficiaryRoute = require('./routes/beneficiaryRoute');
+const purchaserRoute = require('./routes/purchaserRoute');
+const receiverRoute = require('./routes/receiverRoute');
+const purchaseTransactionRoute = require('./routes/purchaseTransactionRoute');
+const giftTransactionRoute = require('./routes/giftTransactionRoute');
+const inheritanceTransactionRoute = require('./routes/inheritanceTransactionRoute');
+const edtReturnRoute = require('./routes/edtReturnRoute');
+const giftReturnRoute = require('./routes/giftReturnRoute');
+const inheritanceReturnRoute = require('./routes/inheritanceReturnRoute');
+const paymentRoute = require('./routes/paymentRoute');
+const penaltyRoute = require('./routes/penaltyRoute');
 
 dotenv.config()
 
@@ -18,4 +29,15 @@ app.listen(PORT, ()=> {
     console.log(`Backend server is running on port ${PORT}!`);
 });
 
-app.use('/api/agents', agentRoute)
+app.use('/api/agents', agentRoute);
+app.use('/api/beneficiaries', beneficiaryRoute);
+app.use('/api/purchasers', purchaserRoute);
+app.use('/api/receivers', receiverRoute);
+app.use('/api/purchase-transactions', purchaseTransactionRoute);
+app.use('/api/gift-transactions', giftTransactionRoute);
+app.use('/api/inheritance-transactions', inheritanceTransactionRoute);
+app.use('/api/edt-returns', edtReturnRoute);
+app.use('/api/gift-returns', giftReturnRoute);
+app.use('/api/inheritance-returns', inheritanceReturnRoute);
+app.use('/api/payments', paymentRoute);
+app.use('/api/penalties', penaltyRoute);
