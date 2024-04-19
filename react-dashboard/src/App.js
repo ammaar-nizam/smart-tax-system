@@ -9,8 +9,8 @@ import Sidebar from "./components/Sidebar";
 
 import Dashboard from "./scenes/dashboard";
 
-import Users from "./scenes/user/users";
-import UserCreateForm from "./scenes/user/userCreateForm";
+import Users from "./scenes/user/agents";
+import AgentCreateForm from "./scenes/user/agentCreateForm";
 import UserUpdateForm from "./scenes/user/userUpdateForm";
 import UserDeleteForm from "./scenes/user/userDeleteForm";
 
@@ -31,7 +31,7 @@ import ViewOrder from "./scenes/items/viewOrder";
 function App() {
 
   useEffect(() => {
-    Axios.get('localhost:5000/api/customers')
+    Axios.get('http://localhost:8000/api/agents')
     .then(res => console.log(res.data)).catch(error => console.log(error))
   }, []);
 
@@ -49,10 +49,10 @@ function App() {
               {/* <Route path="/" element={<Team />} /> */}
               <Route path="/dashboard" element={<Dashboard />} />
 
-              <Route path="/users" element={<Users />} />
-              <Route path="/users/create" element={<UserCreateForm />} />
-			        <Route path="/users/update" element={<UserUpdateForm />} />
-              <Route path="/users/delete" element={<UserDeleteForm />} />
+              <Route path="/agents" element={<Users />} />
+              <Route path="/agents/create" element={<AgentCreateForm />} />
+			        <Route path="/agents/update" element={<UserUpdateForm />} />
+              <Route path="/agents/delete" element={<UserDeleteForm />} />
               {/* <Route path="/contacts" element={<Contacts />} /> */}
               {/* <Route path="/invoices" element={<Invoices />} /> */}
               

@@ -161,7 +161,7 @@ const Sidebar = () => {
 
             <Item
               title="Manage Agents"
-              to="/users"
+              to="/agents"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -169,7 +169,7 @@ const Sidebar = () => {
 
             <Item
               title="Create Agents"
-              to="/users/create"
+              to="/agents/create"
               icon={<PersonAddAltIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -177,7 +177,7 @@ const Sidebar = () => {
 
             <Item
               title="Update Agents"
-              to="/users/update"
+              to="/agents/update"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -185,7 +185,7 @@ const Sidebar = () => {
 
             <Item
               title="Delete Agents"
-              to="/users/delete"
+              to="/agents/delete"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

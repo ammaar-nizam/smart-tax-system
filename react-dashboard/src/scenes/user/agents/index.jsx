@@ -6,18 +6,18 @@ import { tokens } from "../../../theme";
 import { mockDataTeam } from "../../../data/mockData";
 import Header from "../../../components/Header";
 
-const Users = () => {
+const Agents = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [users, setUsers] = useState([]);
+  const [agents, setAgents] = useState([]);
   const [search, setSearch] = useState("");
 
-  const getUsers = async () => {
+  const getAgents = async () => {
     try{
-      const data = await Axios.get("https://artimart-api.up.railway.app/api/users");
+      const data = await Axios.get("http://localhost:8000/api/agents");
       console.log(data.data);
-      setUsers(data.data);
+      setAgents(data.data);
     }catch(error){
       console.log(error)
     }
@@ -26,28 +26,23 @@ const Users = () => {
   // change title
   useEffect(() => {
     document.title = "Agents | SMART TAX";
-    getUsers();
-  });
+    getAgents();
+  }, []);
 
   const columns = [
-    { field: "userFirstName", headerName: "FIRST NAME", flex: 0.3 },
-    { field: "userLastName", headerName: "LAST NAME", flex: 0.3 },
-    { field: "email", headerName: "EMAIL", flex: 0.5 },
-    { field: "phone", headerName: "PHONE", flex: 0.2 },
-    { field: "userRole", headerName: "USER ROLE", flex: 0.3 },
-    { field: "age", headerName: "AGE", flex: 0.2 },
-    { field: "gender", headerName: "GENDER", flex: 0.2 },
-    { field: "house", headerName: "HOUSE", flex: 0.2 },
-    { field: "addressLine1", headerName: "ADDRESS", flex: 0.5 },
-    { field: "city", headerName: "CITY", flex: 0.3 }
+    { field: "id", headerName: "ID", flex: 0.2 },
+    { field: "agentName", headerName: "AGENT NAME", flex: 0.4 },
+    { field: "businessRegistrationNumber", headerName: "BUSINESS REG NUMBER", flex: 0.3 },
+    { field: "agentAddress", headerName: "ADDRESS", flex: 0.5 },
+    { field: "agentTelephone", headerName: "TELEPHONE", flex: 0.2 },
+    { field: "agentEmail", headerName: "EMAIL", flex: 0.3 },
+    { field: "agentUsername", headerName: "USERNAME", flex: 0.3 }
   ];
-
-  getUsers();
 
   return (
     
     <Box>
-      <Header title="Users" subtitle="All User Data" />
+      <Header title="Agents" subtitle="All Agents Data" />
       <Box
         m="0 0 5px 5px"
         height="100vh"
@@ -65,9 +60,9 @@ const Users = () => {
         }}
       >
         <DataGrid
-          rows={users}
+          rows={agents}
           columns={columns}
-          getRowId={(row) => row._id}
+          getRowId={(row) => row.id}
           components={{ Toolbar: GridToolbar }}
         />
       </Box>
@@ -75,4 +70,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Agents;
