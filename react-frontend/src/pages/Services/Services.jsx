@@ -1,16 +1,87 @@
 import React from "react";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import { Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import Grid from "@mui/material/Unstable_Grid2";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import "./Services.css";
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: "#1565C0",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  fontFamily: "Dosis",
+  fontSize: "20px",
+  color: "#fff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "120px",
+}));
 
 const Services = () => {
   return (
-    <>
-    <div>
-      <Sidebar/>
-      <Outlet/>
-    </div>
-    </>
-    
+    <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
+      <Box sx={{ width: "80%" }}>
+        <h2>Our Services</h2>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid xs={6}>
+            <Item component={Link} to="/estate-duty-tax">
+              Estate Duty Tax Return Filing
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item component={Link} to="/gift-tax">
+              Gift Tax Return Filing
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item component={Link} to="/inheritance-tax">
+              Inheritance Tax Return Filing
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item component={Link} to="/easy-tax-payment">
+              Easy Tax Payment
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item component={Link} to="/value-assessment">
+              Value Assessment
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item component={Link} to="/search-property-ownership-information">
+              Search Property Ownership Information
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item component={Link} to="/search-house-prices">
+              Search House Prices
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item
+              component={Link}
+              to="/gift-and-inheritance-related-document-records"
+            >
+              Gift and Inheritance Related Document Records
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item component={Link} to="/read-educational-resources">
+              Read Educational Resources
+            </Item>
+          </Grid>
+          <Grid xs={6}>
+            <Item component={Link} to="https://www.rgd.gov.lk/">
+              Take Me to Land Registry
+            </Item>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
   );
 };
 

@@ -6,7 +6,9 @@ import Services from "./pages/Services/Services";
 import Guidance from "./pages/Guidance/Guidance";
 import Feedback from "./pages/Feedback/Feedback";
 import EstateDutyTax from "./pages/EstateDutyTax/EstateDutyTax";
-import Sidebar from "./components/Sidebar/Sidebar";
+import GiftTax from "./pages/GiftTax/GiftTax";
+import InheritanceTax from "./pages/InheritanceTax/InheritanceTax";
+
 
 function App() {
   return (
@@ -16,6 +18,16 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<Website />} />
             <Route path="/services" element={<Services/>} />
+            <Route path="/estate-duty-tax" element={<EstateDutyTax/>} />
+            <Route path="/gift-tax" element={<GiftTax/>} />
+            <Route path="/inheritance-tax" element={<InheritanceTax/>} />
+            <Route path="/easy-tax-payment" element={<EstateDutyTax/>} />
+            <Route path="/value-assessment" element={<EstateDutyTax/>} />
+            <Route path="/search-property-ownership-information" element={<EstateDutyTax/>} />
+            <Route path="/search-house-prices" element={<EstateDutyTax/>} />
+            <Route path="/gift-and-inheritance-related-document-records" element={<EstateDutyTax/>} />
+            <Route path="/read-educational-resources" element={<EstateDutyTax/>} />
+            <Route path="https://www.rgd.gov.lk/"/>
             <Route path="/guidance" element={<Guidance/>} />
             <Route path="/feedback" element={<Feedback/>} />
           </Route>
