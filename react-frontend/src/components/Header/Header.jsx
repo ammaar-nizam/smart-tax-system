@@ -6,6 +6,7 @@ import "./Header.css";
 import { FiMenu } from "react-icons/fi";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import Button from "@mui/material/Button";
 import ProfileMenu from "../ProfileMenu/ProfileMenu";
 
 const Header = () => {
@@ -13,7 +14,6 @@ const Header = () => {
   const headerColor = useHeaderColor();
   const [dropdown, setDropdown] = useState(false);
   const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
-
   return (
     <section className="h-wrapper" style={{ background: headerColor }}>
       <div className="flexCenter paddings innerWidth h-container">
@@ -32,13 +32,25 @@ const Header = () => {
             <NavLink to="/services">Services</NavLink>
             <NavLink to="/guidance">Guidance</NavLink>
             <NavLink to="/feedback">Feedback Form</NavLink>
-            {!isAuthenticated ? (
-              <button className="button" onClick={loginWithRedirect}>
+            <Button
+              className="button"
+              component={Link}
+              to="/signin"
+              sx={{
+                color: "white",
+                fontFamily: "Dosis"
+              }}
+            >
+              Sign In
+            </Button>
+            {/* {!isAuthenticated ? (
+              <button className="button" onClick={loginWithRedirect} component={Link}
+              to="/signin">
                 Sign In
               </button>
             ) : (
               <ProfileMenu user={user} logout={logout} />
-            )}
+            )} */}
           </div>
         </OutsideClickHandler>
         <div

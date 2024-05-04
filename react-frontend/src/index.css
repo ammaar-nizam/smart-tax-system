@@ -173,6 +173,7 @@ a {
 .form-field input[type="text"],
 .form-field input[type="number"],
 .form-field input[type="date"],
+.form-field input[type="password"],
 .form-field select {
   width: 100%;
   padding: 8px;
@@ -184,6 +185,7 @@ a {
 .form-field input[type="text"]:focus,
 .form-field input[type="number"]:focus,
 .form-field input[type="date"]:focus,
+.form-field input[type="password"]:focus,
 .form-field select:focus {
   outline: none;
   border-color: #1565c0; /* Change to your preferred focus color */

@@ -22,7 +22,6 @@ const schema = z.object({
   purchaserAgentAddress: z.string().nonempty(),
   purchaserAgentEmail: z.string().email(),
   vendorName: z.string().nonempty(),
-  vendorAddress: z.string().nonempty(),
   vendorNIC: z.string().regex(/^(?:\d{9}[Vv])$|^(?:\d{12})$/),
   vendorAgentName: z.string().nonempty(),
   vendorAgentAddress: z.string().nonempty(),
@@ -257,19 +256,6 @@ const EstateDutyTax = () => {
             {/* Tenth row */}
             <div className="form-row">
               <div className="form-field">
-                <label>Seller Address:</label>
-                <input {...register("vendorAddress")} type="text" />
-                {errors.vendorAddress && (
-                  <div className="error-message">
-                    {errors.vendorAddress.message}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Eleventh row */}
-            <div className="form-row">
-              <div className="form-field">
                 <label>Seller Agent Name:</label>
                 <input {...register("vendorAgentName")} type="text" />
                 {errors.vendorAgentName && (
@@ -280,7 +266,7 @@ const EstateDutyTax = () => {
               </div>
             </div>
 
-            {/* Twelth row */}
+            {/* Eleventh row */}
             <div className="form-row">
               <div className="form-field">
                 <label>Seller Agent Address:</label>
