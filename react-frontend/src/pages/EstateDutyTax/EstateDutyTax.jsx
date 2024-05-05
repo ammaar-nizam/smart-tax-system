@@ -9,15 +9,15 @@ const schema = z.object({
     .string()
     .nonempty({ message: "Property Address cannot be empty." }),
   propertyType: z.string().nonempty(),
-  consideration: z.number(),
+  consideration: z.string(),
   effectiveDate: z.string().nonempty(),
   purchaserName: z.string().nonempty(),
   purchaserNIC: z.string().regex(/^(?:\d{9}[Vv])$|^(?:\d{12})$/),
   purchaserAddress: z.string().nonempty(),
   dob: z.string().nonempty(),
-  isFirstProperty: z.boolean(),
-  isSriLankanResident: z.boolean(),
-  isCompany: z.boolean(),
+  isFirstProperty: z.string(),
+  isSriLankanResident: z.string(),
+  isCompany: z.string(),
   purchaserAgentName: z.string().nonempty(),
   purchaserAgentAddress: z.string().nonempty(),
   purchaserAgentEmail: z.string().email(),
@@ -88,7 +88,7 @@ const EstateDutyTax = () => {
                 <label>Consideration:</label>
                 <input
                   {...register("consideration")}
-                  type="number"
+                  type="text"
                   onChange={(e) => {
                     const value = parseFloat(e.target.value);
                     setValue("consideration", value || ""); // If value is NaN, set it to an empty string

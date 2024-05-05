@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Unstable_Grid2";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
+import Cookies from "js-cookie";
 import "./Services.css";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -21,30 +22,94 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const Services = () => {
+  const [accessToken, setAccessToken] = useState(null);
+
+  useEffect(() => {
+    // Retrieve the access token from the cookie
+    const storedAccessToken = Cookies.get("access_token");
+    if (storedAccessToken) {
+      setAccessToken(storedAccessToken);
+    }
+  }, []);
+
   return (
     <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
       <Box sx={{ width: "80%" }}>
         <h2>Our Services</h2>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid xs={6}>
-            <Item component={Link} to="/estate-duty-tax">
-              Estate Duty Tax Return Filing
-            </Item>
+            {accessToken ? (
+              <Grid xs={6}>
+                <Item component={Link} to="/estate-duty-tax">
+                  Estate Duty Tax Return Filing
+                </Item>
+              </Grid>
+            ) : (
+              <Grid xs={6}>
+                <Item
+                  style={{ backgroundColor: "gray", cursor: "not-allowed" }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Estate Duty Tax Return Filing (Sign in to use this service)
+                </Item>
+              </Grid>
+            )}
           </Grid>
           <Grid xs={6}>
-            <Item component={Link} to="/gift-tax">
-              Gift Tax Return Filing
-            </Item>
+            {accessToken ? (
+              <Grid xs={6}>
+                <Item component={Link} to="/gift-tax">
+                  Gift Tax Return Filing
+                </Item>
+              </Grid>
+            ) : (
+              <Grid xs={6}>
+                <Item
+                  style={{ backgroundColor: "gray", cursor: "not-allowed" }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Gift Tax Return Filing (Sign in to use this service)
+                </Item>
+              </Grid>
+            )}
+          </Grid>
+
+          <Grid xs={6}>
+            {accessToken ? (
+              <Grid xs={6}>
+                <Item component={Link} to="/inheritance-tax">
+                  Inheritance Tax Return Filing
+                </Item>
+              </Grid>
+            ) : (
+              <Grid xs={6}>
+                <Item
+                  style={{ backgroundColor: "gray", cursor: "not-allowed" }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Inheritance Tax Return Filing (Sign in to use this service)
+                </Item>
+              </Grid>
+            )}
           </Grid>
           <Grid xs={6}>
-            <Item component={Link} to="/inheritance-tax">
-              Inheritance Tax Return Filing
-            </Item>
-          </Grid>
-          <Grid xs={6}>
-            <Item component={Link} to="/easy-tax-payment">
-              Easy Tax Payment
-            </Item>
+            {accessToken ? (
+              <Grid xs={6}>
+                <Item component={Link} to="/easy-tax-payment">
+                  Easy Tax Payment
+                </Item>
+              </Grid>
+            ) : (
+              <Grid xs={6}>
+                <Item
+                  style={{ backgroundColor: "gray", cursor: "not-allowed" }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Easy Tax Payment (Sign in to use this service)
+                </Item>
+              </Grid>
+            )}
+
           </Grid>
           <Grid xs={6}>
             <Item component={Link} to="/value-assessment">

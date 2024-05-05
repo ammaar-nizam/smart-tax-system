@@ -109,6 +109,17 @@ function loginAsAgent(req, res) {
     });
 }
 
+// LOG OUT
+function logoutAsAgent(req, res) {
+  res
+    .clearCookie("access_token", {
+      sameSite: "none",
+      secure: true,
+    })
+    .status(200)
+    .json("User has been logged out.");
+}
+
 // Get agent by Id
 function getAgentById(req, res) {
   prisma.agent
@@ -231,6 +242,7 @@ function deleteAgentById(req, res) {
 module.exports = {
   registerAgent,
   loginAsAgent,
+  logoutAsAgent,
   getAgentById,
   getAgentByName,
   getAllAgents,

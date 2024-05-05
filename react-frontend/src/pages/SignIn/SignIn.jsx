@@ -2,6 +2,7 @@ import React, { useState }  from "react";
 import { useForm } from "react-hook-form";
 import { API_URL } from "../../config/config";
 import Loader from "../../components/loader";
+import Cookies from "js-cookie";
 
 const SignInForm = () => {
 
@@ -57,8 +58,8 @@ const SignInForm = () => {
         const data = await response.json();
         console.log("Login successful:", data);
 
-        // store token in session storage
-        localStorage.setItem("accessToken", data.accessToken);
+        // Set cookie with accessToken
+      Cookies.set("access_token", data.accessToken);
 
         // redirect to dashboard on successful login
         window.location.href = "/";

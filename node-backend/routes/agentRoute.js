@@ -5,6 +5,7 @@ const router = require("express").Router();
 
 router.post('/register', agentController.registerAgent);
 router.post('/login', agentController.loginAsAgent);
+router.post('/logout', agentController.logoutAsAgent);
 router.get('/names', agentController.getAgentByName);
 router.get('/:id', agentController.getAgentById);
 router.get('/', agentController.getAllAgents);

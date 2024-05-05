@@ -1,26 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { getMenuStyles } from "../../utils/common";
 import OutsideClickHandler from "react-outside-click-handler";
 import useHeaderColor from "../../hooks/useHeaderColor";
 import "./Header.css";
-import { FiMenu } from "react-icons/fi";
 import { Link, NavLink } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import Button from "@mui/material/Button";
-import ProfileMenu from "../ProfileMenu/ProfileMenu";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const [menuOpened, setMenuOpened] = useState(false);
   const headerColor = useHeaderColor();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
-  // const [dropdown, setDropdown] = useState(false);
-  // const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
 
-  const handleLogout = () => {
-    // Perform logout logic here
-    setIsLoggedIn(false);
-    setUsername("");
+  const [agentUsername, setAgentUsername] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    const accessToken = Cookies.get("access_token");
+    if (accessToken) {
+      setAccessToken(accessToken);
+      // Decode the access token to extract the agent's username
+      const decodedToken = jwtDecode(accessToken);
+      setAgentUsername(decodedToken.agentUsername);
+    }
+  }, []);
+
+  const handleSignOut = () => {
+    // Clear the access token cookie
+    Cookies.remove("access_token");
+    // Clear the agentUsername state
+    setAgentUsername("");
+    // Clear the accessToken state
+    setAccessToken("");
     window.location.href = "/";
   };
 
@@ -42,17 +55,35 @@ const Header = () => {
             <NavLink to="/services">Services</NavLink>
             <NavLink to="/read-educational-resources">Guidance</NavLink>
             <NavLink to="/feedback">Feedback Form</NavLink>
-            <Button
-              className="button"
-              component={Link}
-              to="/signin"
-              sx={{
-                color: "white",
-                fontFamily: "Dosis"
-              }}
-            >
-              Sign In
-            </Button>
+            {accessToken ? (
+              // If accessToken is present, render agent's username and sign-out button
+              <>
+                <p>Welcome, {agentUsername}</p>
+                <Button
+                  className="button"
+                  onClick={handleSignOut}
+                  sx={{
+                    color: "white",
+                    fontFamily: "Dosis",
+                  }}
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              // If accessToken is not present, render sign-in button
+              <Button
+                className="button"
+                component={Link}
+                to="/signin"
+                sx={{
+                  color: "white",
+                  fontFamily: "Dosis",
+                }}
+              >
+                Sign In
+              </Button>
+            )}
             {/* {!isAuthenticated ? (
               <button className="button" onClick={loginWithRedirect} component={Link}
               to="/signin">
@@ -63,12 +94,6 @@ const Header = () => {
             )} */}
           </div>
         </OutsideClickHandler>
-        <div
-          className="menu-icon"
-          onClick={() => setMenuOpened((prev) => !prev)}
-        >
-          <FiMenu size={30} />
-        </div>
       </div>
     </section>
   );
