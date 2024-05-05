@@ -10,6 +10,7 @@ import GiftTax from "./pages/GiftTax/GiftTax";
 import InheritanceTax from "./pages/InheritanceTax/InheritanceTax";
 import SignIn from "./pages/SignIn/SignIn";
 import AuthLayout from "./components/Layout/AuthLayout";
+import EducationalResources from "./pages/EducationalResources/EducationalResources";
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
             />
             <Route
               path="/read-educational-resources"
-              element={<EstateDutyTax />}
+              element={<EducationalResources />}
             />
             <Route path="https://www.rgd.gov.lk/" />
             <Route path="/guidance" element={<Guidance />} />
