@@ -87,7 +87,7 @@ CREATE TABLE `gift_transaction` (
     `effective_date` DATETIME(3) NOT NULL,
     `giver_name` VARCHAR(191) NULL,
     `giver_nic` VARCHAR(191) NOT NULL,
-    `purchaser_id` INTEGER NOT NULL,
+    `receiver_id` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -197,7 +197,7 @@ ALTER TABLE `edt_return` ADD CONSTRAINT `edt_return_agent_id_fkey` FOREIGN KEY (
 ALTER TABLE `receiver` ADD CONSTRAINT `receiver_agent_id_fkey` FOREIGN KEY (`agent_id`) REFERENCES `agent`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `gift_transaction` ADD CONSTRAINT `gift_transaction_purchaser_id_fkey` FOREIGN KEY (`purchaser_id`) REFERENCES `receiver`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `gift_transaction` ADD CONSTRAINT `gift_transaction_receiver_id_fkey` FOREIGN KEY (`receiver_id`) REFERENCES `receiver`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `gift_return` ADD CONSTRAINT `gift_return_transaction_id_fkey` FOREIGN KEY (`transaction_id`) REFERENCES `gift_transaction`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
