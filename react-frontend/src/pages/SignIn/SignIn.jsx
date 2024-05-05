@@ -1,19 +1,21 @@
 import React, { useState }  from "react";
 import { useForm } from "react-hook-form";
 import { API_URL } from "../../config/config";
+import Loader from "../../components/loader";
 
 const SignInForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+
+  const [agentUsername, setAgentUsername] = useState("");
+  const [agentPassword, setAgentPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
+    setAgentUsername(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+    setAgentPassword(event.target.value);
   };
 
   const {
@@ -25,12 +27,12 @@ const SignInForm = () => {
     event.preventDefault();
 
     // validations
-    if (!username) {
-      setError("Please enter the username");
+    if (!agentUsername) {
+      setError("Please enter the agentUsername");
       return;
     }
-    if (!password) {
-      setError("Please enter the password");
+    if (!agentPassword) {
+      setError("Please enter the agentPassword");
       return;
     }
 
@@ -44,7 +46,7 @@ const SignInForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ agentUsername, agentPassword }),
       });
 
       if (!response.ok) {
@@ -76,6 +78,10 @@ const SignInForm = () => {
     }
   };
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <>
       <div>
@@ -88,10 +94,10 @@ const SignInForm = () => {
               <div className="form-field">
                 <label>Username:</label>
                 <input
-                  {...register("username")}
+                  {...register("agentUsername")}
                   type="text"
-                  id="username"
-                  value={username}
+                  id="agentUsername"
+                  value={agentUsername}
                   onChange={handleUsernameChange}
                 />
               </div>
@@ -101,10 +107,10 @@ const SignInForm = () => {
               <div className="form-field">
                 <label>Password:</label>
                 <input
-                  {...register("password")}
+                  {...register("agentPassword")}
                   type="password"
-                  id="password"
-                  value={password}
+                  id="agentPassword"
+                  value={agentPassword}
                   onChange={handlePasswordChange}
                 />
               </div>

@@ -12,8 +12,18 @@ import ProfileMenu from "../ProfileMenu/ProfileMenu";
 const Header = () => {
   const [menuOpened, setMenuOpened] = useState(false);
   const headerColor = useHeaderColor();
-  const [dropdown, setDropdown] = useState(false);
-  const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  // const [dropdown, setDropdown] = useState(false);
+  // const { loginWithRedirect, isAuthenticated, user, logout } = useAuth0();
+
+  const handleLogout = () => {
+    // Perform logout logic here
+    setIsLoggedIn(false);
+    setUsername("");
+    window.location.href = "/";
+  };
+
   return (
     <section className="h-wrapper" style={{ background: headerColor }}>
       <div className="flexCenter paddings innerWidth h-container">
