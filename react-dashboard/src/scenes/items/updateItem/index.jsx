@@ -29,7 +29,7 @@ const UpdateItem = () => {
 
   // change title
   useEffect(() => {
-    document.title = "Update Products | ARTIMART";
+    document.title = "Update Products | SMART TAX";
   });
 
   const initialValues = {

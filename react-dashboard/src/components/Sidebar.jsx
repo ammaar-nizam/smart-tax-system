@@ -95,7 +95,7 @@ const Sidebar = () => {
                   letterSpacing={6}
                   color={colors.grey[100]}
                 >
-                  ARTIMART
+                  SMART TAX
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -130,7 +130,7 @@ const Sidebar = () => {
                   letterSpacing={2}
                   color={colors.greenAccent[500]}
                 >
-                  Admin | ArtiMart
+                  Admin | Smart Tax
                 </Typography>
               </Box>
             </Box>
@@ -156,36 +156,36 @@ const Sidebar = () => {
               letterSpacing={2}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              USERS
+              AGENTS
             </Typography>
 
             <Item
-              title="Manage Users"
-              to="/users"
+              title="Manage Agents"
+              to="/agents"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
             <Item
-              title="Create Users"
-              to="/users/create"
+              title="Create Agents"
+              to="/agents/create"
               icon={<PersonAddAltIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
             <Item
-              title="Update Users"
-              to="/users/update"
+              title="Update Agents"
+              to="/agents/update"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
             <Item
-              title="Delete Users"
-              to="/users/delete"
+              title="Delete Agents"
+              to="/agents/delete"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

@@ -25,7 +25,7 @@ const UserDeleteForm = () => {
 
   // change title
   useEffect(() => {
-    document.title = "Delete Users | ARTIMART";
+    document.title = "Delete Agents | SMART TAX";
   });
 
   const initialValues = {

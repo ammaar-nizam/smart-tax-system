@@ -25,7 +25,7 @@ const CreateItem = () => {
 
   // change title
   useEffect(() => {
-    document.title = "Create Product | ARTIMART";
+    document.title = "Create Product | SMART TAX";
   });
 
   const initialValues = {
