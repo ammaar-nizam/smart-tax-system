@@ -100,7 +100,7 @@ model GiftTransaction {
   effectiveDate   DateTime    @map("effective_date")
   giverName       String?     @map("giver_name")
   giverNIC        String      @map("giver_nic")
-  receiverId      Int         @map("purchaser_id")
+  receiverId      Int         @map("receiver_id")
   receiver        Receiver    @relation("ReceiverTransaction", fields: [receiverId], references: [id])
   return          GiftReturn? @relation("GiftTransactionReturns")
 
