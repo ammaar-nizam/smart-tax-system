@@ -124,8 +124,8 @@ const Dashboard = () => {
               /> */}
 
           <StatBox
-            title="12"
-            subtitle="Total Users"
+            title="3"
+            subtitle="Total Agents"
             progress="0.7"
             increase="+14%"
             icon={
@@ -145,12 +145,12 @@ const Dashboard = () => {
           borderRadius="10px"
         >
           <StatBox
-            title="12,352"
-            subtitle="Total Orders"
+            title="0"
+            subtitle="Total EDT Returns"
             progress="0.3"
             increase="+14%"
             icon={
-              <LocalShippingIcon
+              <MonetizationOnIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
@@ -166,12 +166,12 @@ const Dashboard = () => {
           borderRadius="10px"
         >
           <StatBox
-            title="$12,352"
-            subtitle="Total Products"
+            title="0"
+            subtitle="Total Gift Tax Returns"
             progress="0.5"
             increase="+14%"
             icon={
-              <CurrencyExchangeIcon
+              <MonetizationOnIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
@@ -187,8 +187,8 @@ const Dashboard = () => {
           borderRadius="10px"
         >
           <StatBox
-            title="$12,352"
-            subtitle="My Balance"
+            title="0"
+            subtitle="Total Inheritance Tax Returns"
             progress="0.9"
             increase="+14%"
             icon={
@@ -200,7 +200,7 @@ const Dashboard = () => {
         </Box>
 
         {/* ROW 2 */}
-        <Box
+        {/* <Box
           gridColumn="span 8"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
@@ -239,10 +239,10 @@ const Dashboard = () => {
             </Box>
           </Box>
 
-        </Box>
+        </Box> */}
 
         {/* Transactions */}
-        <Box
+        {/* <Box
           gridColumn="span 4"
           gridRow="span 5"
           backgroundColor={colors.primary[400]}
@@ -294,10 +294,10 @@ const Dashboard = () => {
               </Box>
             </Box>
           ))}
-        </Box>
+        </Box> */}
 
         {/* ROW 3 */}
-        <Box
+        {/* <Box
           gridColumn="span 8"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
@@ -322,7 +322,7 @@ const Dashboard = () => {
             columns={columns}
             getRowId={(row) => row._id}/>
           </Box>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
   );

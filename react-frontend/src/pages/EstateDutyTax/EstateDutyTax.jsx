@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Outlet } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 
 const schema = z.object({
   propertyAddress: z
     .string()
     .nonempty({ message: "Property Address cannot be empty." }),
-  propertyType: z.string().nonempty(),
+  type: z.string().nonempty(),
   consideration: z.string(),
   effectiveDate: z.string().nonempty(),
   purchaserName: z.string().nonempty(),
@@ -28,6 +30,53 @@ const schema = z.object({
 });
 
 const EstateDutyTax = () => {
+  const [id, setId] = useState("");
+  const [agentName, setAgentName] = useState("");
+  const [agentEmail, setAgentEmail] = useState("");
+  const [agentAddress, setAgentAddress] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+
+  const [formData, setFormData] = useState({
+    purchaserNIC: "",
+    purchaserName: "",
+    purchaserAddress: "",
+    dob: "",
+    isFirstProperty: "",
+    isSriLankanResident: "",
+    isCompany: "",
+    agentId: "",
+    propertyAddress: "",
+    type: "",
+    consideration: "",
+    effectiveDate: "",
+    vendorName: "",
+    vendorNIC: "",
+    vendorAgentName: "",
+    vendorAgentAddress: "",
+    purchaserId: ""
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    const accessToken = Cookies.get("access_token");
+    if (accessToken) {
+      setAccessToken(accessToken);
+      // Decode the access token to extract the agent's details
+      const decodedToken = jwtDecode(accessToken);
+      setId(decodedToken.id);
+      setAgentName(decodedToken.agentName);
+      setAgentEmail(decodedToken.agentEmail);
+      setAgentAddress(decodedToken.agentAddress);
+    }
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -39,8 +88,10 @@ const EstateDutyTax = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Your form submission logic goes here
+      const agentId = id;
+      data.agentId = agentId;
       console.log(data);
+    
     } catch (error) {
       setError("root", {
         message: "An error occurred while submitting the form",
@@ -72,16 +123,14 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Type of Property:</label>
-                <select {...register("propertyType")} defaultValue="">
+                <select {...register("type")} defaultValue="">
                   <option value="">Select</option>
                   <option value="residential">Residential</option>
                   <option value="commercial">Commercial</option>
                   <option value="multiDwelling">Multi-Dwelling</option>
                 </select>
-                {errors.propertyType && (
-                  <div className="error-message">
-                    {errors.propertyType.message}
-                  </div>
+                {errors.type && (
+                  <div className="error-message">{errors.type.message}</div>
                 )}
               </div>
               <div className="form-field">
@@ -89,10 +138,6 @@ const EstateDutyTax = () => {
                 <input
                   {...register("consideration")}
                   type="text"
-                  onChange={(e) => {
-                    const value = parseFloat(e.target.value);
-                    setValue("consideration", value || ""); // If value is NaN, set it to an empty string
-                  }}
                 />
                 {errors.consideration && (
                   <div className="error-message">
@@ -201,33 +246,33 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Purchaser Agent Name:</label>
-                <input {...register("purchaserAgentName")} type="text" />
-                {errors.purchaserAgentName && (
-                  <div className="error-message">
-                    {errors.purchaserAgentName.message}
-                  </div>
-                )}
+                <input
+                  {...register("purchaserAgentName")}
+                  type="text"
+                  defaultValue={agentName}
+                  readOnly
+                />
               </div>
               <div className="form-field">
                 <label>Purchaser Agent Email:</label>
-                <input {...register("purchaserAgentEmail")} type="text" />
-                {errors.purchaserAgentEmail && (
-                  <div className="error-message">
-                    {errors.purchaserAgentEmail.message}
-                  </div>
-                )}
+                <input
+                  {...register("purchaserAgentEmail")}
+                  type="text"
+                  defaultValue={agentEmail}
+                  readOnly
+                />
               </div>
             </div>
             {/* Eigth row */}
             <div className="form-row">
               <div className="form-field">
                 <label>Purchaser Agent Address:</label>
-                <input {...register("purchaserAgentAddress")} type="text" />
-                {errors.purchaserAgentAddress && (
-                  <div className="error-message">
-                    {errors.purchaserAgentAddress.message}
-                  </div>
-                )}
+                <input
+                  {...register("purchaserAgentAddress")}
+                  type="text"
+                  defaultValue={agentAddress}
+                  readOnly
+                />
               </div>
             </div>
             {/* Nineth row */}

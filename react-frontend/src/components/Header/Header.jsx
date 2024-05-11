@@ -11,8 +11,6 @@ import Cookies from "js-cookie";
 const Header = () => {
   const [menuOpened, setMenuOpened] = useState(false);
   const headerColor = useHeaderColor();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
 
   const [agentUsername, setAgentUsername] = useState("");
   const [accessToken, setAccessToken] = useState("");
@@ -72,17 +70,27 @@ const Header = () => {
               </>
             ) : (
               // If accessToken is not present, render sign-in button
-              <Button
-                className="button"
-                component={Link}
-                to="/signin"
-                sx={{
-                  color: "white",
-                  fontFamily: "Dosis",
-                }}
-              >
-                Sign In
-              </Button>
+              <>
+                <Button
+                  className="button"
+                  component={Link}
+                  to="/signin"
+                  sx={{
+                    color: "white",
+                    fontFamily: "Dosis",
+                  }}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  className="button"
+                  component={Link}
+                  to="/register"
+                  sx={{ color: "white", fontFamily: "Dosis" }}
+                >
+                  Register
+                </Button>
+              </>
             )}
             {/* {!isAuthenticated ? (
               <button className="button" onClick={loginWithRedirect} component={Link}

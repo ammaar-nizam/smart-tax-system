@@ -14,6 +14,9 @@ import AgentCreateForm from "./scenes/user/agentCreateForm";
 import UserUpdateForm from "./scenes/user/userUpdateForm";
 import UserDeleteForm from "./scenes/user/userDeleteForm";
 
+import Feedbacks from "./scenes/feedback/getFeedback";
+// import FeedbackUpdateForm from "./scenes/feedback/updateFeedback";
+
 import Orders from "./scenes/items/orders";
 import Items from "./scenes/items/items";
 import CreateItem from "./scenes/items/createItem";
@@ -55,6 +58,9 @@ function App() {
               <Route path="/agents/delete" element={<UserDeleteForm />} />
               {/* <Route path="/contacts" element={<Contacts />} /> */}
               {/* <Route path="/invoices" element={<Invoices />} /> */}
+
+              <Route path="/feedbacks" element={<Feedbacks />} />
+			        {/* <Route path="/feedbacks/update" element={<FeedbackUpdateForm />} /> */}
               
               <Route path="/orders" element={<Orders />} />
               <Route path="/orders/view" element={<ViewOrder />} />

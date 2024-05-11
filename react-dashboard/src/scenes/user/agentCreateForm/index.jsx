@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import {
-  Box,
-  Button,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../components/Header";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 const AgentCreateForm = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const [agentName, setAgentName] = useState('');
-  const [businessRegistrationNumber, setBusinessRegistrationNumber] = useState('');
-  const [agentAddress, setAgentAddress] = useState('');
-  const [agentTelephone, setAgentTelephone] = useState('');
-  const [agentEmail, setAgentEmail] = useState('');
-  const [agentUsername, setAgentUsername] = useState('');
-  const [agentPassword, setAgentPassword] = useState('');
+  const [agentName, setAgentName] = useState("");
+  const [businessRegistrationNumber, setBusinessRegistrationNumber] =
+    useState("");
+  const [agentAddress, setAgentAddress] = useState("");
+  const [agentTelephone, setAgentTelephone] = useState("");
+  const [agentEmail, setAgentEmail] = useState("");
+  const [agentUsername, setAgentUsername] = useState("");
+  const [agentPassword, setAgentPassword] = useState("");
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   useEffect(() => {
     document.title = "Create Agents | SMART TAX";
@@ -64,7 +62,7 @@ const AgentCreateForm = () => {
     agentAddress: yup.string().required("Address cannot be empty."),
   });
 
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, { resetForm }) => {
     let agentName = values.agentName;
     let businessRegistrationNumber = values.businessRegistrationNumber;
     let agentAddress = values.agentAddress;
@@ -83,14 +81,17 @@ const AgentCreateForm = () => {
         agentUsername,
         agentPassword,
       });
+      setSuccessMessage("Agent created successfully.");
+      setOpenSnackbar(true);
+      resetForm();
       console.log((await response).data);
-      setAgentName('');
-      setBusinessRegistrationNumber('');
-      setAgentAddress('');
-      setAgentTelephone('');
-      setAgentEmail('');
-      setAgentUsername('');
-      setAgentPassword('');
+      setAgentName("");
+      setBusinessRegistrationNumber("");
+      setAgentAddress("");
+      setAgentTelephone("");
+      setAgentEmail("");
+      setAgentUsername("");
+      setAgentPassword("");
     } catch (error) {
       console.log(error.response);
     }
@@ -241,6 +242,22 @@ const AgentCreateForm = () => {
           </form>
         )}
       </Formik>
+
+      {/* Snackbar for displaying success message */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          severity="success"
+          onClose={() => setOpenSnackbar(false)}
+        >
+          {successMessage}
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };

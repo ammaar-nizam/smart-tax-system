@@ -161,10 +161,6 @@ a {
   margin-top: 20px; /* Adjust spacing between the form and the submit button */
 }
 
-.form-field {
-  margin-bottom: 20px;
-}
-
 .form-field label {
   display: block;
   margin-bottom: 5px;
@@ -187,6 +183,19 @@ a {
 .form-field input[type="date"]:focus,
 .form-field input[type="password"]:focus,
 .form-field select:focus {
+  outline: none;
+  border-color: #1565c0; /* Change to your preferred focus color */
+}
+
+.form-field textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form-field textarea:focus {
   outline: none;
   border-color: #1565c0; /* Change to your preferred focus color */
 }

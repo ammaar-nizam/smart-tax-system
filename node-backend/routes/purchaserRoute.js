@@ -4,6 +4,7 @@ const authorization = require('../middleware/authorization');
 const router = require("express").Router();
 
 router.post('/create', purchaserController.createPurchaser);
+router.get('/nic', purchaserController.getPurchaserIdByNIC);
 router.get('/names', purchaserController.getPurchaserByName);
 router.get('/:id', purchaserController.getPurchaserById);
 router.get('/', purchaserController.getAllPurchasers);

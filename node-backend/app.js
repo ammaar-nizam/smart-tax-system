@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const cors = require("cors");
 
 const agentRoute = require('./routes/agentRoute');
+const feedbackRoute = require('./routes/feedbackRoute');
 const beneficiaryRoute = require('./routes/beneficiaryRoute');
 const purchaserRoute = require('./routes/purchaserRoute');
 const receiverRoute = require('./routes/receiverRoute');
@@ -30,6 +31,7 @@ app.listen(PORT, ()=> {
 });
 
 app.use('/api/agents', agentRoute);
+app.use('/api/feedbacks', feedbackRoute);
 app.use('/api/beneficiaries', beneficiaryRoute);
 app.use('/api/purchasers', purchaserRoute);
 app.use('/api/receivers', receiverRoute);

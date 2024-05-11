@@ -14,7 +14,7 @@ model Agent {
   businessRegistrationNumber String?             @unique @map("business_registration_number")
   agentAddress               String?             @map("agent_address")
   agentTelephone             String?             @map("agent_telephone")
-  agentEmail                 String?             @unique @map("agent_email")
+  agentEmail                 String?             @map("agent_email")
   agentUsername              String?             @unique @map("agent_username")
   agentPassword              String?             @map("agent_password")
   purchasers                 Purchaser[]         @relation("PurchaserAgent")
@@ -126,8 +126,8 @@ model GiftReturn {
 model Beneficiary {
   id                  Int                      @id @default(autoincrement())
   nic                 String                   @unique
-  beneficiaryName        String?                  @map("beneficiary_name")
-  beneficiaryAddress     String?                  @map("beneficiary_address")
+  beneficiaryName     String?                  @map("beneficiary_name")
+  beneficiaryAddress  String?                  @map("beneficiary_address")
   dob                 DateTime
   isFirstProperty     Boolean                  @map("is_first_property")
   isSriLankanResident Boolean                  @map("is_sri_lankan_resident")
@@ -196,4 +196,23 @@ model Penalty {
   paymentPenalty Payment  @relation("PaymentPenalty", fields: [paymentId], references: [id])
 
   @@map("penalty")
+}
+
+// Define a Feedback model to represent feedback entries
+model Feedback {
+  id          Int            @id @default(autoincrement())
+  name        String
+  email       String
+  feedback    String
+  rating      Int
+  status      FeedbackStatus @default(PENDING)
+  response    String? // Optional column to store response
+
+  @@map("feedback")
+}
+
+// Define an enum for the status of the feedback
+enum FeedbackStatus {
+  PENDING // Feedback has not been responded to yet
+  RESPONDED // Feedback has been responded to
 }

@@ -1,6 +1,7 @@
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 const prisma = require("../config/prismaConfig");
+const emailController = require("./emailController");
 const { validator, schemaForAgent } = require("../utils/validation");
 
 // Registering an agent
@@ -47,6 +48,7 @@ function registerAgent(req, res) {
                 message: "Agent created successfully.",
                 agent: createdAgent,
               });
+              emailController.sendRegistrationConfirmationEmail(createdAgent.agentUsername);
             })
             .catch((err) => {
               res.status(500).json({
@@ -87,7 +89,9 @@ function loginAsAgent(req, res) {
         const accessToken = jwt.sign(
           {
             id: currentAgent.id,
+            agentName: currentAgent.agentName,
             agentEmail: currentAgent.agentEmail,
+            agentAddress: currentAgent.agentAddress,
             agentUsername: currentAgent.agentUsername,
           },
           process.env.JWT_SECRET_KEY,

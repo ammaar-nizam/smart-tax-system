@@ -184,7 +184,7 @@ const Sidebar = () => {
             />
 
             <Item
-              title="Delete Agents"
+              title="Unregister Agents"
               to="/agents/delete"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
@@ -197,24 +197,17 @@ const Sidebar = () => {
               letterSpacing={2}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              MERCHANDISE
+              FEEDBACK
             </Typography>
 
             <Item
-              title="All Orders"
-              to="/orders"
-              icon={<ChecklistIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Item
-              title="View Order"
-              to="/orders/view"
+              title="Manage Feedbacks"
+              to="/feedbacks"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
 
             {/* <Item
               title="Update Order"
@@ -224,7 +217,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             /> */}
 
-            <Item
+            {/* <Item
               title="All Products"
               to="/listings"
               icon={<FormatListBulletedIcon />}
@@ -303,7 +296,7 @@ const Sidebar = () => {
               icon={<HelpOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
           </Box>
         </Menu>
       </ProSidebar>

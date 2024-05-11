@@ -10,7 +10,6 @@ CREATE TABLE `agent` (
     `agent_password` VARCHAR(191) NULL,
 
     UNIQUE INDEX `agent_business_registration_number_key`(`business_registration_number`),
-    UNIQUE INDEX `agent_agent_email_key`(`agent_email`),
     UNIQUE INDEX `agent_agent_username_key`(`agent_username`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -178,6 +177,19 @@ CREATE TABLE `penalty` (
     `payment_id` INTEGER NOT NULL,
 
     UNIQUE INDEX `penalty_payment_id_key`(`payment_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `feedback` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `feedback` VARCHAR(191) NOT NULL,
+    `rating` INTEGER NOT NULL,
+    `status` ENUM('PENDING', 'RESPONDED') NOT NULL DEFAULT 'PENDING',
+    `response` VARCHAR(191) NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

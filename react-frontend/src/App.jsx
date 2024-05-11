@@ -11,6 +11,7 @@ import InheritanceTax from "./pages/InheritanceTax/InheritanceTax";
 import SignIn from "./pages/SignIn/SignIn";
 import AuthLayout from "./components/Layout/AuthLayout";
 import EducationalResources from "./pages/EducationalResources/EducationalResources";
+import RegisterForm from "./pages/Register/Register";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route element={<AuthLayout/>}>
             <Route path="/signin" element={<SignIn/>} />
+            <Route path="/register" element={<RegisterForm/>} />
           </Route>
           <Route element={<Layout />}>
             <Route path="/" element={<Website />} />
@@ -44,7 +46,6 @@ function App() {
             <Route path="https://www.rgd.gov.lk/" />
             <Route path="/guidance" element={<Guidance />} />
             <Route path="/feedback" element={<Feedback />} />
-            <Route path="/signin" element={<SignIn />} />
           </Route>
         </Routes>
       </Suspense>

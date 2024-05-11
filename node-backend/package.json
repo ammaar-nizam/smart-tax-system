@@ -17,6 +17,7 @@
     "express-oauth2-jwt-bearer": "^1.6.0",
     "fastest-validator": "^1.17.0",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.13",
     "nodemon": "^3.0.3",
     "prisma": "^5.9.1"
   }

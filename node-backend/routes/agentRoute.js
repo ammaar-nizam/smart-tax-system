@@ -1,8 +1,10 @@
 const agentController = require('../controllers/agentController');
+const emailController = require('../controllers/emailController');
 const authorization = require('../middleware/authorization');
 
 const router = require("express").Router();
 
+router.post('/request', emailController.sendRegistrationRequestEmail);
 router.post('/register', agentController.registerAgent);
 router.post('/login', agentController.loginAsAgent);
 router.post('/logout', agentController.logoutAsAgent);
