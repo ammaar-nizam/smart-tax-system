@@ -66,12 +66,12 @@ const SignInForm = () => {
       } else {
         console.error("Login failed:", response.statusText);
         // Handle login failure, such as displaying an error message
-        setError("Invalid username or password. Please try again.");
+        setError("An unexpected error occurred. Please try again later.");
         return;
       }
     } catch (error) {
       console.error("Error during login:", error);
-      setError("An unexpected error occurred. Please try again later.");
+      setError("Invalid username or password. Please try again.");
       return;
     } finally {
       setLoading(false);

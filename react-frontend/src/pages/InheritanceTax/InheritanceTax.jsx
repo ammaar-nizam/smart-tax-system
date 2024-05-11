@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Outlet } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 
 const schema = z.object({
   propertyAddress: z
@@ -15,9 +17,9 @@ const schema = z.object({
   beneficiaryNIC: z.string().regex(/^(?:\d{9}[Vv])$|^(?:\d{12})$/),
   beneficiaryAddress: z.string().nonempty(),
   dob: z.string().nonempty(),
-  isFirstProperty: z.boolean(),
-  isSriLankanResident: z.boolean(),
-  isCompany: z.boolean(),
+  isFirstProperty: z.string(),
+  isSriLankanResident: z.string(),
+  isCompany: z.string(),
   beneficiaryAgentName: z.string().nonempty(),
   beneficiaryAgentAddress: z.string().nonempty(),
   beneficiaryAgentEmail: z.string().email(),
@@ -26,6 +28,26 @@ const schema = z.object({
 });
 
 const InheritanceTax = () => {
+
+  const [id, setId] = useState("");
+  const [agentName, setAgentName] = useState("");
+  const [agentEmail, setAgentEmail] = useState("");
+  const [agentAddress, setAgentAddress] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    const accessToken = Cookies.get("access_token");
+    if (accessToken) {
+      setAccessToken(accessToken);
+      // Decode the access token to extract the agent's details
+      const decodedToken = jwtDecode(accessToken);
+      setId(decodedToken.id);
+      setAgentName(decodedToken.agentName);
+      setAgentEmail(decodedToken.agentEmail);
+      setAgentAddress(decodedToken.agentAddress);
+    }
+  }, []);
+
   const {
     register,
     handleSubmit,
