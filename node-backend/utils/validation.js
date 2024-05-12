@@ -158,12 +158,14 @@ const schemaForPurchaser = {
       },
     },
     dob: {
-      type: "date",
+      type: "string", // Change type to string
       optional: false,
+      pattern: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/,
       message: {
-        optional: "Date of birth cannot be empty",
+          optional: "Date of birth cannot be empty",
+          pattern: "Date of birth must be in the format YYYY-MM-DDTHH:MM:SS.sssZ",
       },
-    },
+  },
     isFirstProperty: {
       type: "boolean",
       optional: false,
@@ -186,10 +188,12 @@ const schemaForPurchaser = {
       },
     },
     agentId: {
-      type: "int",
+      type: "number",
+      integer: true,
       optional: false,
       message: {
         optional: "Agent ID cannot be empty",
+        integer: "Agent ID must be an integer",
       },
     },
   };

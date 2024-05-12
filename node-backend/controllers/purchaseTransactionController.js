@@ -1,63 +1,58 @@
 const prisma = require("../config/prismaConfig");
 const { validator, schemaForPurchaser } = require("../utils/validation");
 
-// Create a Purchaser
-function createPurchaser(req, res) {
-  const purchaser = {
-    nic: req.body.nic,
-    purchaserName: req.body.purchaserName,
-    purchaserAddress: req.body.purchaserAddress,
-    dob: req.body.dob,
-    isFirstProperty: req.body.isFirstProperty,
-    isSriLankanResident: req.body.isSriLankanResident,
-    isCompany: req.body.isCompany,
-    agentId: req.body.agentId,
+// Create a Purchase Transaction
+function createPurchaseTransaction(req, res) {
+  const purchaseTransaction = {
+    propertyAddress: req.body.propertyAddress,
+    type: req.body.type,
+    consideration: req.body.consideration,
+    effectiveDate: req.body.effectiveDate,
+    vendorName: req.body.vendorName,
+    vendorNIC: req.body.vendorNIC,
+    vendorAgentName: req.body.vendorAgentName,
+    vendorAgentAddress: req.body.vendorAgentAddress,
+    purchaserId: req.body.purchaserId,
   };
 
-  // Validate user input
-  const validationResponse = validator.validate(purchaser, schemaForPurchaser);
-
-  if (validationResponse !== true) {
-    res.status(400).json({
-      message: "Validation failed.",
-      errors: validationResponse,
-    });
-  } else {
-    prisma.purchaser
-      .findUnique({
-        where: {
-          nic: req.body.nic,
-        },
-      })
-      .then((data) => {
-        if (data) {
-          res.status(409).json({
-            message: "An purchaser already exists with the same NIC.",
-          });
-        } else {
-          prisma.purchaser
-            .create({ data: purchaser })
-            .then((createdPurchaser) => {
-              res.status(201).json({
-                message: "Purchaser created successfully.",
-                purchaser: createdPurchaser,
-              });
-            })
-            .catch((err) => {
-              res.status(500).json({
-                message: "Error creating the purchaser.",
-                error: err,
-              });
-            });
-        }
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: "Unexpected error occured.",
-          error: err,
+  prisma.purchaseTransaction
+    .findFirst({
+      where: {
+        AND: [
+          { propertyAddress: req.body.propertyAddress },
+          { effectiveDate: req.body.effectiveDate },
+        ],
+      },
+    })
+    .then((data) => {
+      if (data) {
+        res.status(409).json({
+          message: "A transaction already exists.",
         });
+      } else {
+        prisma.purchaseTransaction
+          .create({ data: purchaseTransaction })
+          .then((createdPurchaseTransaction) => {
+            res.status(201).json({
+              message: "Transaction created successfully.",
+              purchaseTransaction: createdPurchaseTransaction,
+            });
+          })
+          .catch((err) => {
+            res.status(500).json({
+              message: "Error creating the transaction.",
+              error: err,
+            });
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        message: "Unexpected error occured.",
+        error: err,
       });
-  }
+    });
 }
 
 // Get purchaser by Id
@@ -178,7 +173,7 @@ function deletePurchaserById(req, res) {
 }
 
 module.exports = {
-  createPurchaser,
+  createPurchaseTransaction,
   getPurchaserById,
   getPurchaserByName,
   getAllPurchasers,

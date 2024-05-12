@@ -47,7 +47,7 @@ model PurchaseTransaction {
   id                 Int        @id @default(autoincrement())
   propertyAddress    String?    @map("property_address")
   type               String
-  consideration      Decimal
+  consideration      Decimal    @db.Decimal(10, 2)
   effectiveDate      DateTime   @map("effective_date")
   vendorName         String?    @map("vendor_name")
   vendorNIC          String     @map("vendor_nic")
@@ -63,10 +63,10 @@ model PurchaseTransaction {
 model EDTReturn {
   id                 Int                 @id @default(autoincrement())
   type               String
-  taxDue             Decimal             @map("tax_due")
+  taxDue             Decimal             @map("tax_due") @db.Decimal(10, 2)
   submitDate         DateTime            @map("submit_date")
   deadlineDate       DateTime            @map("deadline_date")
-  status             String
+  status             EDTStatus           @default(FILED)
   transactionId      Int                 @unique @map("transaction_id")
   agentId            Int                 @map("agent_id")
   transactionReturns PurchaseTransaction @relation("EDTTransactionReturns", fields: [transactionId], references: [id])
@@ -74,6 +74,13 @@ model EDTReturn {
   payment            Payment?            @relation("EDTReturnPayment")
 
   @@map("edt_return")
+}
+
+enum EDTStatus {
+  FILED
+  CANCELLED
+  PAID
+  COMPLETED
 }
 
 model Receiver {
@@ -96,7 +103,7 @@ model GiftTransaction {
   id              Int         @id @default(autoincrement())
   propertyAddress String?     @map("property_address")
   type            String
-  consideration   Decimal
+  consideration   Decimal     @db.Decimal(10, 2)
   effectiveDate   DateTime    @map("effective_date")
   giverName       String?     @map("giver_name")
   giverNIC        String      @map("giver_nic")
@@ -110,10 +117,10 @@ model GiftTransaction {
 model GiftReturn {
   id                 Int             @id @default(autoincrement())
   type               String
-  taxDue             Decimal         @map("tax_due")
+  taxDue             Decimal         @map("tax_due") @db.Decimal(10, 2)
   submitDate         DateTime        @map("submit_date")
   deadlineDate       DateTime        @map("deadline_date")
-  status             String
+  status             GiftTStatus     @default(FILED)
   transactionId      Int             @unique @map("transaction_id")
   agentId            Int             @map("agent_id")
   transactionReturns GiftTransaction @relation("GiftTransactionReturns", fields: [transactionId], references: [id])
@@ -121,6 +128,13 @@ model GiftReturn {
   payment            Payment?        @relation("GiftReturnPayment")
 
   @@map("gift_return")
+}
+
+enum GiftTStatus {
+  FILED
+  CANCELLED
+  PAID
+  COMPLETED
 }
 
 model Beneficiary {
@@ -143,7 +157,7 @@ model InheritanceTransaction {
   id              Int                @id @default(autoincrement())
   propertyAddress String?            @map("property_address")
   type            String
-  consideration   Decimal
+  consideration   Decimal            @db.Decimal(10, 2)
   effectiveDate   DateTime           @map("effective_date")
   decedentName    String?            @map("decedent_name")
   decedentNIC     String             @map("decedent_nic")
@@ -157,10 +171,10 @@ model InheritanceTransaction {
 model InheritanceReturn {
   id                 Int                    @id @default(autoincrement())
   type               String
-  taxDue             Decimal                @map("tax_due")
+  taxDue             Decimal                @map("tax_due") @db.Decimal(10, 2)
   submitDate         DateTime               @map("submit_date")
   deadlineDate       DateTime               @map("deadline_date")
-  status             String
+  status             InheritanceTStatus     @default(FILED)
   transactionId      Int                    @unique @map("transaction_id")
   agentId            Int                    @map("agent_id")
   transactionReturns InheritanceTransaction @relation("InheritanceTransactionReturns", fields: [transactionId], references: [id])
@@ -170,9 +184,16 @@ model InheritanceReturn {
   @@map("inheritance_return")
 }
 
+enum InheritanceTStatus {
+  FILED
+  CANCELLED
+  PAID
+  COMPLETED
+}
+
 model Payment {
   id                       Int               @id @default(autoincrement())
-  amount                   Decimal
+  amount                   Decimal           @db.Decimal(10, 2)
   status                   String
   paidDate                 DateTime          @map("paid_date")
   edtReturnId              Int               @unique @map("edt_return_id")
@@ -189,7 +210,7 @@ model Payment {
 model Penalty {
   id             Int      @id @default(autoincrement())
   reason         String?
-  amount         Decimal
+  amount         Decimal  @db.Decimal(10, 2)
   imposedDate    DateTime @map("imposed_date")
   status         String
   paymentId      Int      @unique @map("payment_id")
@@ -200,13 +221,13 @@ model Penalty {
 
 // Define a Feedback model to represent feedback entries
 model Feedback {
-  id          Int            @id @default(autoincrement())
-  name        String
-  email       String
-  feedback    String
-  rating      Int
-  status      FeedbackStatus @default(PENDING)
-  response    String? // Optional column to store response
+  id       Int            @id @default(autoincrement())
+  name     String
+  email    String
+  feedback String
+  rating   Int
+  status   FeedbackStatus @default(PENDING)
+  response String? // Optional column to store response
 
   @@map("feedback")
 }

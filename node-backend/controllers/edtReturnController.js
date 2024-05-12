@@ -1,139 +1,6 @@
 const prisma = require("../config/prismaConfig");
 const { validator, schemaForEDTReturn } = require("../utils/validation");
 
-// FILE EDT RETURN
-function fileEDTReturn(req, res) {
-  try {
-    const purchaser = {
-      nic: req.body.nic,
-      purchaserName: req.body.purchaserName,
-      purchaserAddress: req.body.purchaserAddress,
-      dob: req.body.dob,
-      isFirstProperty: req.body.isFirstProperty,
-      isSriLankanResident: req.body.isSriLankanResident,
-      isCompany: req.body.isCompany,
-      agentId: req.body.agentId,
-    };
-
-    const purchaseTransaction = {
-      propertyAddress: req.body.propertyAddress,
-      type: req.body.type,
-      consideration: req.body.consideration,
-      effectiveDate: req.body.effectiveDate,
-      vendorName: req.body.vendorName,
-      vendorNIC: req.body.vendorNIC,
-      vendorAgentName: req.body.vendorAgentName,
-      vendorAgentAddress: req.body.vendorAgentAddress,
-      purchaserId: req.body.purchaserId,
-    };
-
-    // CREATING PURCHASER IF DOESNT EXIST
-    prisma.purchaser
-      .findUnique({
-        where: {
-          nic: req.body.nic,
-        },
-      })
-      .then((purchaserData) => {
-        if (purchaserData) {
-          res.status(409).json({
-            message: "An purchaser already exists with the same NIC.",
-          });
-        } else {
-          prisma.purchaser
-            .create({ purchaserData: purchaser })
-            .then((createdPurchaser) => {
-              res.status(201).json({
-                message: "Purchaser created successfully.",
-                purchaser: createdPurchaser,
-              });
-            })
-            .catch((err) => {
-              res.status(500).json({
-                message: "Error creating the purchaser.",
-                error: err,
-              });
-            });
-        }
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: "Unexpected error occured.",
-          error: err,
-        });
-      });
-
-    // GETTING PURCHASER ID
-    const nic = req.query.nic;
-    prisma.purchaser
-      .findUnique({
-        select: {
-          id: true,
-        },
-        where: {
-          nic: nic,
-        },
-      })
-      .then((purchaserId) => {
-        if (purchaserId) {
-          res.status(200).json(purchaserId);
-        } else {
-          res.status(404).json({
-            message: "Purchaser not found",
-          });
-        }
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: "Error retrieving the purchaser ID",
-          error: err,
-        });
-      });
-
-    // CREATING PURCHASE TRANSACTION
-    prisma.purchaseTransaction
-      .findUnique({
-        where: {
-          propertyAddress: req.body.propertyAddress,
-          effectiveDate: req.body.effectiveDate,
-        },
-      })
-      .then((purchaseTransactionData) => {
-        if (purchaseTransactionData) {
-          res.status(409).json({
-            message: "A purchase transaction already exists.",
-          });
-        } else {
-          prisma.purchaseTransaction
-            .create({ purchaseTransactionData: purchaseTransaction })
-            .then((createdPurchaseTransaction) => {
-              res.status(201).json({
-                message: "A purchase transaction created successfully.",
-                purchaseTransaction: createdPurchaseTransaction,
-              });
-            })
-            .catch((err) => {
-              res.status(500).json({
-                message: "Error creating the transaction.",
-                error: err,
-              });
-            });
-        }
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: "Unexpected error occured.",
-          error: err,
-        });
-      });
-  } catch (error) {
-    console.error("Error processing estate duty tax return:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while processing the request." });
-  }
-}
-
 // Create a EDT Return
 function createEDTReturn(req, res) {
   const edtReturn = {
@@ -146,50 +13,21 @@ function createEDTReturn(req, res) {
     agentId: req.body.agentId,
   };
 
-  // Validate user input
-  const validationResponse = validator.validate(edtReturn, schemaForEDTReturn);
-
-  if (validationResponse !== true) {
-    res.status(400).json({
-      message: "Validation failed.",
-      errors: validationResponse,
-    });
-  } else {
-    prisma.eDTReturn
-      .findUnique({
-        where: {
-          id: req.body.id,
-        },
-      })
-      .then((data) => {
-        if (data) {
-          res.status(409).json({
-            message: "An EDT Return already exists with the same Id.",
-          });
-        } else {
-          prisma.eDTReturn
-            .create({ data: edtReturn })
-            .then((createdEDTReturn) => {
-              res.status(201).json({
-                message: "EDT Return created successfully.",
-                edtReturn: createdEDTReturn,
-              });
-            })
-            .catch((err) => {
-              res.status(500).json({
-                message: "Error creating the EDT Return.",
-                error: err,
-              });
-            });
-        }
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: "Unexpected error occured.",
-          error: err,
-        });
+  prisma.eDTReturn
+    .create({ data: edtReturn })
+    .then((createdEDTReturn) => {
+      res.status(201).json({
+        message: "EDT Return created successfully.",
+        edtReturn: createdEDTReturn,
       });
-  }
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json({
+        message: "Error creating the EDT Return.",
+        error: err,
+      });
+    });
 }
 
 // Get edtReturn by Id
@@ -309,7 +147,6 @@ function deleteEDTReturnById(req, res) {
 }
 
 module.exports = {
-  fileEDTReturn,
   createEDTReturn,
   getEDTReturnById,
   getEDTReturnByName,

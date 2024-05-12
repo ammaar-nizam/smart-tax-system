@@ -4,7 +4,7 @@ const { validator, schemaForPurchaser } = require("../utils/validation");
 // Create a Purchaser
 function createPurchaser(req, res) {
   const purchaser = {
-    nic: req.body.nic,
+    nic: req.body.purchaserNIC,
     purchaserName: req.body.purchaserName,
     purchaserAddress: req.body.purchaserAddress,
     dob: req.body.dob,
@@ -26,13 +26,13 @@ function createPurchaser(req, res) {
     prisma.purchaser
       .findUnique({
         where: {
-          nic: req.body.nic,
+          nic: req.body.purchaserNIC,
         },
       })
       .then((data) => {
         if (data) {
           res.status(409).json({
-            message: "An purchaser already exists with the same NIC.",
+            message: "A purchaser already exists with the same NIC.",
           });
         } else {
           prisma.purchaser
@@ -83,7 +83,7 @@ function getPurchaserById(req, res) {
 
 // GETTING PURCHASER ID BY NIC
 function getPurchaserIdByNIC(req, res) {
-  const nic = req.query.nic;
+  const nic = req.query.purchaserNIC;
   prisma.purchaser
     .findUnique({
       select: {
@@ -208,8 +208,8 @@ function deletePurchaserById(req, res) {
 
 module.exports = {
   createPurchaser,
-  getPurchaserById,
   getPurchaserIdByNIC,
+  getPurchaserById,
   getPurchaserByName,
   getAllPurchasers,
   updatePurchaserById,

@@ -1,32 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { Outlet } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
+import { calculateEstateDutyTax } from "./CalculateEstateDutyTax.js";
 
-const schema = z.object({
-  propertyAddress: z
+const schema = yup.object({
+  purchaserNIC: yup
     .string()
-    .nonempty({ message: "Property Address cannot be empty." }),
-  type: z.string().nonempty(),
-  consideration: z.string(),
-  effectiveDate: z.string().nonempty(),
-  purchaserName: z.string().nonempty(),
-  purchaserNIC: z.string().regex(/^(?:\d{9}[Vv])$|^(?:\d{12})$/),
-  purchaserAddress: z.string().nonempty(),
-  dob: z.string().nonempty(),
-  isFirstProperty: z.string(),
-  isSriLankanResident: z.string(),
-  isCompany: z.string(),
-  purchaserAgentName: z.string().nonempty(),
-  purchaserAgentAddress: z.string().nonempty(),
-  purchaserAgentEmail: z.string().email(),
-  vendorName: z.string().nonempty(),
-  vendorNIC: z.string().regex(/^(?:\d{9}[Vv])$|^(?:\d{12})$/),
-  vendorAgentName: z.string().nonempty(),
-  vendorAgentAddress: z.string().nonempty(),
+    .required("Required Field")
+    .matches(/^(?:\d{9}[Vv])$|^(?:\d{12})$/, "Invalid NIC format"),
+  purchaserName: yup.string().required("Required Field"),
+  purchaserAddress: yup.string().required("Required Field"),
+  dob: yup.date().required("Required Field"),
+  isFirstProperty: yup.string().required("Required Field"),
+  isSriLankanResident: yup.string().required("Required Field"),
+  isCompany: yup.string().required("Required Field"),
+  propertyAddress: yup.string().required("Required Field"),
+  type: yup.string().required("Required Field"),
+  consideration: yup
+    .number()
+    .required("Required Field")
+    .positive("Consideration must be a positive value"),
+  effectiveDate: yup.date().required("Required Field"),
+  vendorName: yup.string().required("Required Field"),
+  vendorNIC: yup
+    .string()
+    .required("Required Field")
+    .matches(/^(?:\d{9}[Vv])$|^(?:\d{12})$/, "Invalid Vendor NIC format"),
+  vendorAgentName: yup.string().required("Required Field"),
+  vendorAgentAddress: yup.string().required("Required Field"),
 });
 
 const EstateDutyTax = () => {
@@ -35,34 +40,11 @@ const EstateDutyTax = () => {
   const [agentEmail, setAgentEmail] = useState("");
   const [agentAddress, setAgentAddress] = useState("");
   const [accessToken, setAccessToken] = useState("");
-
-  const [formData, setFormData] = useState({
-    purchaserNIC: "",
-    purchaserName: "",
-    purchaserAddress: "",
-    dob: "",
-    isFirstProperty: "",
-    isSriLankanResident: "",
-    isCompany: "",
-    agentId: "",
-    propertyAddress: "",
-    type: "",
-    consideration: "",
-    effectiveDate: "",
-    vendorName: "",
-    vendorNIC: "",
-    vendorAgentName: "",
-    vendorAgentAddress: "",
-    purchaserId: ""
-  });
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
-  };
+  const [taxResult, setTaxResult] = useState(null);
+  const [showConfirmButton, setShowConfirmButton] = useState(false);
+  const [showSubmitButton, setShowSubmitButton] = useState(false);
+  const [showCalculateButton, setShowCalculateButton] = useState(true);
+  const [confirmationClicked, setConfirmationClicked] = useState(false);
 
   useEffect(() => {
     const accessToken = Cookies.get("access_token");
@@ -80,23 +62,65 @@ const EstateDutyTax = () => {
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: zodResolver(schema),
-  });
+  } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = async (data) => {
     try {
-      const agentId = id;
-      data.agentId = agentId;
-      console.log(data);
-    
+      const formData = {
+        ...data,
+        isCompany:
+          data.isCompany === "true"
+            ? true
+            : data.isCompany === "false"
+            ? false
+            : data.isCompany,
+        isSriLankanResident:
+          data.isSriLankanResident === "true"
+            ? true
+            : data.isSriLankanResident === "false"
+            ? false
+            : data.isSriLankanResident,
+        isFirstProperty:
+          data.isFirstProperty === "true"
+            ? true
+            : data.isFirstProperty === "false"
+            ? false
+            : data.isFirstProperty,
+        purchaserAgentName: agentName,
+        purchaserAgentEmail: agentEmail,
+        purchaserAgentAddress: agentAddress,
+        id: id,
+        purchaserId: "Purchaser ID comes here after an API call",
+      };
+
+      console.log(formData);
+
+      // Calculate tax using the provided function
+      const taxResult = calculateEstateDutyTax(formData);
+
+      // Set the tax result in state
+      setTaxResult(taxResult);
+      setShowConfirmButton(true);
+      setShowCalculateButton(false);
+      console.log(taxResult);
     } catch (error) {
       setError("root", {
         message: "An error occurred while submitting the form",
       });
     }
+  };
+
+  const onConfirm = () => {
+    setShowConfirmButton(false);
+    setShowSubmitButton(true);
+    setConfirmationClicked(true);
+  };
+
+  const onFinalSubmit = () => {
+    // Perform the API call to insert data into tables in the database
+    // Here, you can send the taxResult along with other form data to the API
+    console.log("Final submit");
   };
 
   return (
@@ -110,7 +134,11 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Property Address:</label>
-                <input {...register("propertyAddress")} type="text" />
+                <input
+                  {...register("propertyAddress")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.propertyAddress && (
                   <div className="error-message">
                     {errors.propertyAddress.message}
@@ -123,7 +151,7 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Type of Property:</label>
-                <select {...register("type")} defaultValue="">
+                <select {...register("type")} defaultValue="" disabled={confirmationClicked}>
                   <option value="">Select</option>
                   <option value="residential">Residential</option>
                   <option value="commercial">Commercial</option>
@@ -138,6 +166,7 @@ const EstateDutyTax = () => {
                 <input
                   {...register("consideration")}
                   type="text"
+                  disabled={confirmationClicked}
                 />
                 {errors.consideration && (
                   <div className="error-message">
@@ -147,7 +176,7 @@ const EstateDutyTax = () => {
               </div>
               <div className="form-field">
                 <label>Effective Date:</label>
-                <input {...register("effectiveDate")} type="date" />
+                <input {...register("effectiveDate")} type="date" disabled={confirmationClicked}/>
                 {errors.effectiveDate && (
                   <div className="error-message">
                     {errors.effectiveDate.message}
@@ -160,7 +189,11 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Purchaser Name:</label>
-                <input {...register("purchaserName")} type="text" />
+                <input
+                  {...register("purchaserName")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.purchaserName && (
                   <div className="error-message">
                     {errors.purchaserName.message}
@@ -169,7 +202,11 @@ const EstateDutyTax = () => {
               </div>
               <div className="form-field">
                 <label>Purchaser NIC Number:</label>
-                <input {...register("purchaserNIC")} type="text" />
+                <input
+                  {...register("purchaserNIC")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.purchaserNIC && (
                   <div className="error-message">
                     {errors.purchaserNIC.message}
@@ -181,7 +218,11 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Purchaser Address:</label>
-                <input {...register("purchaserAddress")} type="text" />
+                <input
+                  {...register("purchaserAddress")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.purchaserAddress && (
                   <div className="error-message">
                     {errors.purchaserAddress.message}
@@ -193,7 +234,7 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>First Time Buyer?:</label>
-                <select {...register("isFirstProperty")} defaultValue="">
+                <select {...register("isFirstProperty")} defaultValue="" disabled={confirmationClicked}>
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -207,7 +248,7 @@ const EstateDutyTax = () => {
 
               <div className="form-field">
                 <label>Purchaser a Company?:</label>
-                <select {...register("isCompany")} defaultValue="">
+                <select {...register("isCompany")} defaultValue="" disabled={confirmationClicked}>
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -223,7 +264,7 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Sri Lankan Resident?:</label>
-                <select {...register("isSriLankanResident")} defaultValue="">
+                <select {...register("isSriLankanResident")} defaultValue="" disabled={confirmationClicked}>
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -236,7 +277,7 @@ const EstateDutyTax = () => {
               </div>
               <div className="form-field">
                 <label>Purchaser Date of Birth:</label>
-                <input {...register("dob")} type="date" />
+                <input {...register("dob")} type="date" disabled={confirmationClicked}/>
                 {errors.dob && (
                   <div className="error-message">{errors.dob.message}</div>
                 )}
@@ -248,8 +289,9 @@ const EstateDutyTax = () => {
                 <label>Purchaser Agent Name:</label>
                 <input
                   {...register("purchaserAgentName")}
-                  type="text"
                   defaultValue={agentName}
+                  type="text"
+                  disabled={confirmationClicked}
                   readOnly
                 />
               </div>
@@ -257,8 +299,9 @@ const EstateDutyTax = () => {
                 <label>Purchaser Agent Email:</label>
                 <input
                   {...register("purchaserAgentEmail")}
-                  type="text"
                   defaultValue={agentEmail}
+                  type="text"
+                  disabled={confirmationClicked}
                   readOnly
                 />
               </div>
@@ -269,8 +312,9 @@ const EstateDutyTax = () => {
                 <label>Purchaser Agent Address:</label>
                 <input
                   {...register("purchaserAgentAddress")}
-                  type="text"
                   defaultValue={agentAddress}
+                  type="text"
+                  disabled={confirmationClicked}
                   readOnly
                 />
               </div>
@@ -280,7 +324,11 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Seller Name:</label>
-                <input {...register("vendorName")} type="text" />
+                <input
+                  {...register("vendorName")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.vendorName && (
                   <div className="error-message">
                     {errors.vendorName.message}
@@ -290,7 +338,11 @@ const EstateDutyTax = () => {
 
               <div className="form-field">
                 <label>Seller NIC Number:</label>
-                <input {...register("vendorNIC")} type="text" />
+                <input
+                  {...register("vendorNIC")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.vendorNIC && (
                   <div className="error-message">
                     {errors.vendorNIC.message}
@@ -302,7 +354,11 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Seller Agent Name:</label>
-                <input {...register("vendorAgentName")} type="text" />
+                <input
+                  {...register("vendorAgentName")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.vendorAgentName && (
                   <div className="error-message">
                     {errors.vendorAgentName.message}
@@ -315,7 +371,11 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Seller Agent Address:</label>
-                <input {...register("vendorAgentAddress")} type="text" />
+                <input
+                  {...register("vendorAgentAddress")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.vendorAgentAddress && (
                   <div className="error-message">
                     {errors.vendorAgentAddress.message}
@@ -324,13 +384,37 @@ const EstateDutyTax = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="submit-button"
-            >
-              {isSubmitting ? "Submitting..." : "File Return"}
-            </button>
+            {taxResult && (
+              <div>
+                <h3>Calculated Tax Details</h3>
+                <p>Estate Duty Tax Due: {taxResult.tax}</p>
+                <p>Penalty Charged: {taxResult.penalty}</p>
+                <p>Total Tax Due: {taxResult.totalTax}</p>
+              </div>
+            )}
+
+            {showConfirmButton && (
+              <button className="submit-button" onClick={onConfirm}>
+                Confirm Calculation
+              </button>
+            )}
+
+            {showSubmitButton && (
+              <button className="submit-button" onClick={onFinalSubmit}>
+                Submit Tax Return
+              </button>
+            )}
+
+            {showCalculateButton && (
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="submit-button"
+              >
+                {isSubmitting ? "Calculating..." : "Calculate EDT"}
+              </button>
+            )}
+
             {errors.root && <div>{errors.root.message}</div>}
           </form>
         </div>
