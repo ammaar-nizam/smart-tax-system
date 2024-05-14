@@ -35,7 +35,7 @@ CREATE TABLE `purchase_transaction` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `property_address` VARCHAR(191) NULL,
     `type` VARCHAR(191) NOT NULL,
-    `consideration` DECIMAL(65, 30) NOT NULL,
+    `consideration` DECIMAL(10, 2) NOT NULL,
     `effective_date` DATETIME(3) NOT NULL,
     `vendor_name` VARCHAR(191) NULL,
     `vendor_nic` VARCHAR(191) NOT NULL,
@@ -43,6 +43,8 @@ CREATE TABLE `purchase_transaction` (
     `vendor_agent_address` VARCHAR(191) NULL,
     `purchaser_id` INTEGER NOT NULL,
 
+    UNIQUE INDEX `purchase_transaction_property_address_key`(`property_address`),
+    UNIQUE INDEX `purchase_transaction_vendor_nic_key`(`vendor_nic`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -50,10 +52,10 @@ CREATE TABLE `purchase_transaction` (
 CREATE TABLE `edt_return` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `type` VARCHAR(191) NOT NULL,
-    `tax_due` DECIMAL(65, 30) NOT NULL,
+    `tax_due` DECIMAL(10, 2) NOT NULL,
     `submit_date` DATETIME(3) NOT NULL,
     `deadline_date` DATETIME(3) NOT NULL,
-    `status` VARCHAR(191) NOT NULL,
+    `status` ENUM('FILED', 'CANCELLED', 'PAID', 'COMPLETED') NOT NULL DEFAULT 'FILED',
     `transaction_id` INTEGER NOT NULL,
     `agent_id` INTEGER NOT NULL,
 
@@ -82,7 +84,7 @@ CREATE TABLE `gift_transaction` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `property_address` VARCHAR(191) NULL,
     `type` VARCHAR(191) NOT NULL,
-    `consideration` DECIMAL(65, 30) NOT NULL,
+    `consideration` DECIMAL(10, 2) NOT NULL,
     `effective_date` DATETIME(3) NOT NULL,
     `giver_name` VARCHAR(191) NULL,
     `giver_nic` VARCHAR(191) NOT NULL,
@@ -95,10 +97,10 @@ CREATE TABLE `gift_transaction` (
 CREATE TABLE `gift_return` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `type` VARCHAR(191) NOT NULL,
-    `tax_due` DECIMAL(65, 30) NOT NULL,
+    `tax_due` DECIMAL(10, 2) NOT NULL,
     `submit_date` DATETIME(3) NOT NULL,
     `deadline_date` DATETIME(3) NOT NULL,
-    `status` VARCHAR(191) NOT NULL,
+    `status` ENUM('FILED', 'CANCELLED', 'PAID', 'COMPLETED') NOT NULL DEFAULT 'FILED',
     `transaction_id` INTEGER NOT NULL,
     `agent_id` INTEGER NOT NULL,
 
@@ -127,7 +129,7 @@ CREATE TABLE `inheritance_transaction` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `property_address` VARCHAR(191) NULL,
     `type` VARCHAR(191) NOT NULL,
-    `consideration` DECIMAL(65, 30) NOT NULL,
+    `consideration` DECIMAL(10, 2) NOT NULL,
     `effective_date` DATETIME(3) NOT NULL,
     `decedent_name` VARCHAR(191) NULL,
     `decedent_nic` VARCHAR(191) NOT NULL,
@@ -140,10 +142,10 @@ CREATE TABLE `inheritance_transaction` (
 CREATE TABLE `inheritance_return` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `type` VARCHAR(191) NOT NULL,
-    `tax_due` DECIMAL(65, 30) NOT NULL,
+    `tax_due` DECIMAL(10, 2) NOT NULL,
     `submit_date` DATETIME(3) NOT NULL,
     `deadline_date` DATETIME(3) NOT NULL,
-    `status` VARCHAR(191) NOT NULL,
+    `status` ENUM('FILED', 'CANCELLED', 'PAID', 'COMPLETED') NOT NULL DEFAULT 'FILED',
     `transaction_id` INTEGER NOT NULL,
     `agent_id` INTEGER NOT NULL,
 
@@ -154,7 +156,7 @@ CREATE TABLE `inheritance_return` (
 -- CreateTable
 CREATE TABLE `payment` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `amount` DECIMAL(65, 30) NOT NULL,
+    `amount` DECIMAL(10, 2) NOT NULL,
     `status` VARCHAR(191) NOT NULL,
     `paid_date` DATETIME(3) NOT NULL,
     `edt_return_id` INTEGER NOT NULL,
@@ -171,7 +173,7 @@ CREATE TABLE `payment` (
 CREATE TABLE `penalty` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `reason` VARCHAR(191) NULL,
-    `amount` DECIMAL(65, 30) NOT NULL,
+    `amount` DECIMAL(10, 2) NOT NULL,
     `imposed_date` DATETIME(3) NOT NULL,
     `status` VARCHAR(191) NOT NULL,
     `payment_id` INTEGER NOT NULL,

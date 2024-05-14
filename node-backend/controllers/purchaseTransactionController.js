@@ -39,6 +39,7 @@ function createPurchaseTransaction(req, res) {
             });
           })
           .catch((err) => {
+            console.log(err)
             res.status(500).json({
               message: "Error creating the transaction.",
               error: err,
@@ -172,6 +173,40 @@ function deletePurchaserById(req, res) {
     });
 }
 
+// Get purchase transaction by property address and effective date
+function getPurchaseTransactionId(req, res) {
+  const propertyAddress = req.query.propertyAddress;
+  const vendorNIC = req.query.vendorNIC;
+  
+  prisma.purchaseTransaction
+    .findFirst({
+      where: {
+        AND: [
+          { propertyAddress: propertyAddress },
+          { vendorNIC: vendorNIC },
+        ],
+      },
+    })
+    .then((purchaseTransaction) => {
+      if (purchaseTransaction) {
+        res.status(200).json({
+          purchaseTransactionId: purchaseTransaction.id,
+        });
+      } else {
+        res.status(404).json({
+          message: "Purchase transaction not found",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json({
+        message: "Error retrieving the purchase transaction",
+        error: err,
+      });
+    });
+}
+
 module.exports = {
   createPurchaseTransaction,
   getPurchaserById,
@@ -179,4 +214,5 @@ module.exports = {
   getAllPurchasers,
   updatePurchaserById,
   deletePurchaserById,
+  getPurchaseTransactionId
 };

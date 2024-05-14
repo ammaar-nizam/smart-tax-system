@@ -1,15 +1,20 @@
 // CalculateEstateDutyTax.js
 
-export function calculateEstateDutyTax(formData) {
+export function calculateEstateDutyTax(purchaser, purchaseTransaction) {
   const {
     isFirstProperty,
     isSriLankanResident,
-    isCompany,
+    isCompany
+  } = purchaser;
+
+  const {
     type,
     consideration,
-    effectiveDate,
-  } = formData;
+    effectiveDate
+  } = purchaseTransaction;
 
+  console.log(isFirstProperty)
+  console.log(consideration)
   // Get the current date
   const currentDate = new Date();
 

@@ -45,12 +45,12 @@ model Purchaser {
 
 model PurchaseTransaction {
   id                 Int        @id @default(autoincrement())
-  propertyAddress    String?    @map("property_address")
+  propertyAddress    String?    @unique @map("property_address") 
   type               String
   consideration      Decimal    @db.Decimal(10, 2)
   effectiveDate      DateTime   @map("effective_date")
   vendorName         String?    @map("vendor_name")
-  vendorNIC          String     @map("vendor_nic")
+  vendorNIC          String     @unique @map("vendor_nic")
   vendorAgentName    String?    @map("vendor_agent_name")
   vendorAgentAddress String?    @map("vendor_agent_address")
   purchaserId        Int        @map("purchaser_id")

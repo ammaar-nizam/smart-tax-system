@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import axios from "axios";
 import { Outlet } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import { calculateEstateDutyTax } from "./CalculateEstateDutyTax.js";
+import { formatDate } from "../../utils/dateUtils.js";
 
 const schema = yup.object({
   purchaserNIC: yup
@@ -41,10 +43,17 @@ const EstateDutyTax = () => {
   const [agentAddress, setAgentAddress] = useState("");
   const [accessToken, setAccessToken] = useState("");
   const [taxResult, setTaxResult] = useState(null);
+  const [formData, setFormData] = useState(null);
   const [showConfirmButton, setShowConfirmButton] = useState(false);
   const [showSubmitButton, setShowSubmitButton] = useState(false);
   const [showCalculateButton, setShowCalculateButton] = useState(true);
   const [confirmationClicked, setConfirmationClicked] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: yupResolver(schema) });
 
   useEffect(() => {
     const accessToken = Cookies.get("access_token");
@@ -59,55 +68,78 @@ const EstateDutyTax = () => {
     }
   }, []);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({ resolver: yupResolver(schema) });
-
   const onSubmit = async (data) => {
     try {
+      const formattedDOB = formatDate(data.dob);
+      const formattedEffectiveDate = formatDate(data.effectiveDate);
+      // Get the current date
+      const currentDate = formatDate(new Date().toISOString());
+      // Calculate the deadline date (14 days from the current date)
+      const deadlineDate = new Date();
+      deadlineDate.setDate(deadlineDate.getDate() + 14);
+      const formattedDeadlineDate = formatDate(deadlineDate.toISOString());
       const formData = {
-        ...data,
-        isCompany:
-          data.isCompany === "true"
-            ? true
-            : data.isCompany === "false"
-            ? false
-            : data.isCompany,
-        isSriLankanResident:
-          data.isSriLankanResident === "true"
-            ? true
-            : data.isSriLankanResident === "false"
-            ? false
-            : data.isSriLankanResident,
-        isFirstProperty:
-          data.isFirstProperty === "true"
-            ? true
-            : data.isFirstProperty === "false"
-            ? false
-            : data.isFirstProperty,
-        purchaserAgentName: agentName,
-        purchaserAgentEmail: agentEmail,
-        purchaserAgentAddress: agentAddress,
-        id: id,
-        purchaserId: "Purchaser ID comes here after an API call",
+        purchaser: {
+          purchaserNIC: data.purchaserNIC,
+          purchaserName: data.purchaserName,
+          purchaserAddress: data.purchaserAddress,
+          dob: formattedDOB,
+          isCompany:
+            data.isCompany === "true"
+              ? true
+              : data.isCompany === "false"
+              ? false
+              : data.isCompany,
+          isSriLankanResident:
+            data.isSriLankanResident === "true"
+              ? true
+              : data.isSriLankanResident === "false"
+              ? false
+              : data.isSriLankanResident,
+          isFirstProperty:
+            data.isFirstProperty === "true"
+              ? true
+              : data.isFirstProperty === "false"
+              ? false
+              : data.isFirstProperty,
+          agentId: id,
+        },
+        purchaseTransaction: {
+          propertyAddress: data.propertyAddress,
+          type: data.type,
+          consideration: data.consideration,
+          effectiveDate: formattedEffectiveDate,
+          vendorName: data.vendorName,
+          vendorNIC: data.vendorNIC,
+          vendorAgentName: data.vendorAgentName,
+          vendorAgentAddress: data.vendorAgentAddress,
+          purchaserId: 0,
+        },
+        edtReturn: {
+          type: "EDT",
+          taxDue: 0,
+          submitDate: currentDate,
+          deadlineDate: formattedDeadlineDate,
+          status: "FILED",
+          agentId: id,
+          transactionId: 0,
+        },
       };
 
-      console.log(formData);
-
+      setFormData(formData);
       // Calculate tax using the provided function
-      const taxResult = calculateEstateDutyTax(formData);
+      const taxResult = calculateEstateDutyTax(
+        formData.purchaser,
+        formData.purchaseTransaction
+      );
 
+      console.log(formData.purchaseTransaction.consideration)
       // Set the tax result in state
       setTaxResult(taxResult);
       setShowConfirmButton(true);
       setShowCalculateButton(false);
-      console.log(taxResult);
     } catch (error) {
-      setError("root", {
-        message: "An error occurred while submitting the form",
-      });
+      console.log(error);
     }
   };
 
@@ -117,10 +149,67 @@ const EstateDutyTax = () => {
     setConfirmationClicked(true);
   };
 
-  const onFinalSubmit = () => {
-    // Perform the API call to insert data into tables in the database
-    // Here, you can send the taxResult along with other form data to the API
-    console.log("Final submit");
+  const onFinalSubmit = async () => {
+    try {
+      const purchaserResponse = await axios.post(
+        "http://localhost:8000/api/purchasers/create",
+        formData.purchaser, {
+          headers: {
+            'Authorization': 'Bearer ' + accessToken,
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      try {
+        const retrievedPurchaserId = await axios.get(
+          `http://localhost:8000/api/purchasers/nic?purchaserNIC=${formData.purchaser.purchaserNIC}`
+        );
+        formData.purchaseTransaction.purchaserId = retrievedPurchaserId.data.id;
+        const purchaseTransactionResponse = await axios.post(
+          "http://localhost:8000/api/purchase-transactions/create",
+          formData.purchaseTransaction
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        try {
+          const retrievedPurchaseTransactionId = await axios.get(
+            `http://localhost:8000/api/purchase-transactions/transaction?propertyAddress=${formData.purchaseTransaction.propertyAddress}&vendorNIC=${formData.purchaseTransaction.vendorNIC}`
+          );
+          console.log(retrievedPurchaseTransactionId.data.id);
+          formData.edtReturn.transactionId =
+            retrievedPurchaseTransactionId.data.purchaseTransactionId;
+          formData.edtReturn.taxDue = taxResult.totalTax;
+          // Call API to create an EDT return
+          const edtReturnResponse = await axios.post(
+            "http://localhost:8000/api/edt-returns/create",
+            formData.edtReturn
+          );
+          alert("Tax return submitted successfully!");
+          setFormData({
+            ...formData,
+            purchaser: null,
+          });
+          setFormData({
+            ...formData,
+            purchaseTransaction: null,
+          });
+          setFormData({
+            ...formData,
+            edtReturn: null,
+          });
+          setShowSubmitButton(false);
+          setShowConfirmButton(false);
+          setShowCalculateButton(true);
+
+          setConfirmationClicked(true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
   };
 
   return (
@@ -151,7 +240,12 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Type of Property:</label>
-                <select {...register("type")} defaultValue="" disabled={confirmationClicked}>
+                <select
+                  {...register("type")}
+                  type="text"
+                  defaultValue=""
+                  disabled={confirmationClicked}
+                >
                   <option value="">Select</option>
                   <option value="residential">Residential</option>
                   <option value="commercial">Commercial</option>
@@ -176,7 +270,11 @@ const EstateDutyTax = () => {
               </div>
               <div className="form-field">
                 <label>Effective Date:</label>
-                <input {...register("effectiveDate")} type="date" disabled={confirmationClicked}/>
+                <input
+                  {...register("effectiveDate")}
+                  type="date"
+                  disabled={confirmationClicked}
+                />
                 {errors.effectiveDate && (
                   <div className="error-message">
                     {errors.effectiveDate.message}
@@ -234,7 +332,11 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>First Time Buyer?:</label>
-                <select {...register("isFirstProperty")} defaultValue="" disabled={confirmationClicked}>
+                <select
+                  {...register("isFirstProperty")}
+                  defaultValue=""
+                  disabled={confirmationClicked}
+                >
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -248,7 +350,11 @@ const EstateDutyTax = () => {
 
               <div className="form-field">
                 <label>Purchaser a Company?:</label>
-                <select {...register("isCompany")} defaultValue="" disabled={confirmationClicked}>
+                <select
+                  {...register("isCompany")}
+                  defaultValue=""
+                  disabled={confirmationClicked}
+                >
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -264,7 +370,11 @@ const EstateDutyTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Sri Lankan Resident?:</label>
-                <select {...register("isSriLankanResident")} defaultValue="" disabled={confirmationClicked}>
+                <select
+                  {...register("isSriLankanResident")}
+                  defaultValue=""
+                  disabled={confirmationClicked}
+                >
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -277,7 +387,11 @@ const EstateDutyTax = () => {
               </div>
               <div className="form-field">
                 <label>Purchaser Date of Birth:</label>
-                <input {...register("dob")} type="date" disabled={confirmationClicked}/>
+                <input
+                  {...register("dob")}
+                  type="date"
+                  disabled={confirmationClicked}
+                />
                 {errors.dob && (
                   <div className="error-message">{errors.dob.message}</div>
                 )}
