@@ -18,4 +18,5 @@ const verifyToken = (req, res, next) => {
             message: "You are not authenticated."
         })
     }
-};module.exports = { verifyToken };
+};
+module.exports = { verifyToken };

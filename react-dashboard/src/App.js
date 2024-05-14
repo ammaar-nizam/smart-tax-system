@@ -11,25 +11,11 @@ import Dashboard from "./scenes/dashboard";
 
 import Users from "./scenes/user/agents";
 import AgentCreateForm from "./scenes/user/agentCreateForm";
-import UserUpdateForm from "./scenes/user/userUpdateForm";
-import UserDeleteForm from "./scenes/user/userDeleteForm";
 
-import Feedbacks from "./scenes/feedback/getFeedback";
-// import FeedbackUpdateForm from "./scenes/feedback/updateFeedback";
-
-import Orders from "./scenes/items/orders";
-import Items from "./scenes/items/items";
-import CreateItem from "./scenes/items/createItem";
-
-import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
-import Form from "./scenes/form";
-import Calendar from "./scenes/calendar";
-import FAQ from "./scenes/faq";
-
-import UpdateItem from "./scenes/items/updateItem";
-import DeleteItem from "./scenes/items/deleteItem";
-import ViewOrder from "./scenes/items/viewOrder";
+import Feedbacks from "./scenes/feedback";
+import Purchasers from "./scenes/purchaser";
+import PurchaseTransactions from "./scenes/purchaserTransaction";
+import EDTReturns from "./scenes/edtReturn";
 
 function App() {
 
@@ -54,24 +40,14 @@ function App() {
 
               <Route path="/agents" element={<Users />} />
               <Route path="/agents/create" element={<AgentCreateForm />} />
-			        <Route path="/agents/update" element={<UserUpdateForm />} />
-              <Route path="/agents/delete" element={<UserDeleteForm />} />
-              {/* <Route path="/contacts" element={<Contacts />} /> */}
-              {/* <Route path="/invoices" element={<Invoices />} /> */}
 
               <Route path="/feedbacks" element={<Feedbacks />} />
-			        {/* <Route path="/feedbacks/update" element={<FeedbackUpdateForm />} /> */}
-              
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/orders/view" element={<ViewOrder />} />
-              <Route path="/listings" element={<Items />} />
-              <Route path="/listings/create" element={<CreateItem />} />
-              <Route path="/listings/update" element={<UpdateItem />} />
-              <Route path="/listings/delete" element={<DeleteItem />} />
-              
-              <Route path="/form" element={<Form />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/faq" element={<FAQ />} />
+
+              <Route path="/purchasers" element={<Purchasers/>} />
+
+              <Route path="/purchase-transactions" element={<PurchaseTransactions/>} />
+              <Route path="/edt-returns" element={<EDTReturns/>} />
+			        
             </Routes>
           </main>
         </div>

@@ -99,16 +99,16 @@ function getPurchaserByName(req, res) {
     });
 }
 
-// Get all purchasers
-function getAllPurchasers(req, res) {
-  prisma.purchaser
+// Get all purchase transactions
+function getAllPurchaseTransactions(req, res) {
+  prisma.purchaseTransaction
     .findMany()
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error retrieving all purchasers.",
+        message: "Error retrieving all transactions.",
         error: err,
       });
     });
@@ -211,7 +211,7 @@ module.exports = {
   createPurchaseTransaction,
   getPurchaserById,
   getPurchaserByName,
-  getAllPurchasers,
+  getAllPurchaseTransactions,
   updatePurchaserById,
   deletePurchaserById,
   getPurchaseTransactionId

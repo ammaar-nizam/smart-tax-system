@@ -160,7 +160,7 @@ const Sidebar = () => {
             </Typography>
 
             <Item
-              title="Manage Agents"
+              title="View Agents"
               to="/agents"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
@@ -197,7 +197,7 @@ const Sidebar = () => {
               letterSpacing={2}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              FEEDBACK
+              FEEDBACKS
             </Typography>
 
             <Item
@@ -208,41 +208,58 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              letterSpacing={2}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              PURCHASERS
+            </Typography>
 
-            {/* <Item
-              title="Update Order"
-              to="/orders/update"
+            <Item
+              title="View Purchasers"
+              to="/purchasers"
               icon={<WidgetsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            /> */}
+            />
 
-            {/* <Item
-              title="All Products"
+            <Item
+              title="Update Purchaser"
               to="/listings"
               icon={<FormatListBulletedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
-            <Item
-              title="Add Product"
-              to="/listings/create"
-              icon={<PlaylistAddIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              letterSpacing={2}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              TRANSACTIONS
+            </Typography>
 
             <Item
-              title="Update Product"
-              to="/listings/update"
+              title="Purchase Transactions"
+              to="/purchase-transactions"
               icon={<MenuOpenIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
             <Item
-              title="Delete Product"
+              title="Gift Transactions"
+              to="/listings/delete"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title="Inheritance Transactions"
               to="/listings/delete"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
@@ -255,19 +272,19 @@ const Sidebar = () => {
               letterSpacing={2}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              OTHER
+              FILED RETURNS
             </Typography>
 
             <Item
-              title="Delivery Partners"
-              to="/form"
+              title="EDT Returns"
+              to="/edt-returns"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
             <Item
-              title="Payment Details"
+              title="Gift Tax Returns"
               to="/faq"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
@@ -275,28 +292,12 @@ const Sidebar = () => {
             />
 
             <Item
-              title="Shipping Details"
+              title="Inheritance Returns"
               to="/calendar"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-
-            <Item
-              title="FAQ"
-              to="/faq"
-              icon={<HelpOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Item
-              title="Help"
-              to="/pie"
-              icon={<HelpOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
           </Box>
         </Menu>
       </ProSidebar>

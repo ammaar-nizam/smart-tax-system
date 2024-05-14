@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { Box, Typography, useTheme, IconButton, Button } from "@mui/material";
 import { DataGrid, GridToolbar, GridActionsCell } from "@mui/x-data-grid";
-import { tokens } from "../../../theme";
-import Header from "../../../components/Header";
+import { tokens } from "../../theme";
+import Header from "../../components/Header";
 import RespondModal from "./RespondModal";
 
 const Feedback = () => {

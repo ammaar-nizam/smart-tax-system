@@ -109,29 +109,61 @@ const Services = () => {
                 </Item>
               </Grid>
             )}
+          </Grid>
+          <Grid xs={6}>
+            {accessToken ? (
+              <Grid xs={6}>
+                <Item
+                  component={Link}
+                  to="/search-property-ownership-information"
+                >
+                  Search Property Ownership Information
+                </Item>
+              </Grid>
+            ) : (
+              <Grid xs={6}>
+                <Item
+                  style={{ backgroundColor: "gray", cursor: "not-allowed" }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Search Property Ownership Information (Sign in to use this
+                  service)
+                </Item>
+              </Grid>
+            )}
+          </Grid>
+          <Grid xs={6}>
+            {accessToken ? (
+              <Grid xs={6}>
+                <Item
+                  component={Link}
+                  to="/gift-and-inheritance-related-document-records"
+                >
+                  Gift and Inheritance Related Document Records
+                </Item>
+              </Grid>
+            ) : (
+              <Grid xs={6}>
+                <Item
+                  style={{ backgroundColor: "gray", cursor: "not-allowed" }}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Gift and Inheritance Related Document Records (Sign in to use
+                  this service)
+                </Item>
+              </Grid>
+            )}
+          </Grid>
 
-          </Grid>
-          <Grid xs={6}>
-            <Item component={Link} to="/value-assessment">
-              Value Assessment
-            </Item>
-          </Grid>
-          <Grid xs={6}>
-            <Item component={Link} to="/search-property-ownership-information">
-              Search Property Ownership Information
-            </Item>
-          </Grid>
           <Grid xs={6}>
             <Item component={Link} to="/search-house-prices">
               Search House Prices
             </Item>
           </Grid>
+
           <Grid xs={6}>
-            <Item
-              component={Link}
-              to="/gift-and-inheritance-related-document-records"
-            >
-              Gift and Inheritance Related Document Records
+            <Item component={Link} to="/value-assessment">
+              Value Assessment
             </Item>
           </Grid>
           <Grid xs={6}>
