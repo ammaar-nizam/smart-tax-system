@@ -4,7 +4,6 @@ const authorization = require('../middleware/authorization');
 const router = require("express").Router();
 
 router.post('/create', edtReturnController.createEDTReturn, authorization.verifyToken);
-router.get('/names', edtReturnController.getEDTReturnByName, authorization.verifyToken);
 router.get('/:id', edtReturnController.getEDTReturnById, authorization.verifyToken);
 router.get('/', edtReturnController.getAllEDTReturns, authorization.verifyToken);
 router.patch('/:id', edtReturnController.updateEDTReturnById, authorization.verifyToken);

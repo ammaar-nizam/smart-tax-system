@@ -1,5 +1,4 @@
 const prisma = require("../config/prismaConfig");
-const { validator, schemaForEDTReturn } = require("../utils/validation");
 
 // Create a EDT Return
 function createEDTReturn(req, res) {
@@ -46,28 +45,6 @@ function getEDTReturnById(req, res) {
     .catch((err) => {
       res.status(500).json({
         message: "Error retrieving the EDT Return.",
-        error: err,
-      });
-    });
-}
-
-// Get edtReturn by name
-function getEDTReturnByName(req, res) {
-  const edtReturnName = req.query.edtReturnName;
-  prisma.eDTReturn
-    .findMany({ where: { edtReturnName: { contains: edtReturnName } } })
-    .then((edtReturns) => {
-      if (edtReturns) {
-        res.status(200).json(edtReturns);
-      } else {
-        res.status(404).json({
-          message: "EDTReturn not found",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Error retrieving the EDT Return",
         error: err,
       });
     });
@@ -149,7 +126,6 @@ function deleteEDTReturnById(req, res) {
 module.exports = {
   createEDTReturn,
   getEDTReturnById,
-  getEDTReturnByName,
   getAllEDTReturns,
   updateEDTReturnById,
   deleteEDTReturnById,

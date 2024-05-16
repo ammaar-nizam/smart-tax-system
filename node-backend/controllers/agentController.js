@@ -19,6 +19,7 @@ function registerAgent(req, res) {
     ).toString(),
   };
 
+  it;
   // Validate user input
   const validationResponse = validator.validate(agent, schemaForAgent);
 
@@ -48,7 +49,9 @@ function registerAgent(req, res) {
                 message: "Agent created successfully.",
                 agent: createdAgent,
               });
-              emailController.sendRegistrationConfirmationEmail(createdAgent.agentUsername);
+              emailController.sendRegistrationConfirmationEmail(
+                createdAgent.agentUsername
+              );
             })
             .catch((err) => {
               res.status(500).json({

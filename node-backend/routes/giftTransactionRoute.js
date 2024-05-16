@@ -1,13 +1,12 @@
-const beneficiaryController = require('../controllers/beneficiaryController');
+const giftTransactionController = require('../controllers/giftTransactionController');
 const authorization = require('../middleware/authorization');
 
 const router = require("express").Router();
 
-router.post('/create', beneficiaryController.createBeneficiary);
-router.get('/names', beneficiaryController.getBeneficiaryByName);
-router.get('/:id', beneficiaryController.getBeneficiaryById);
-router.get('/', beneficiaryController.getAllBeneficiaries);
-router.patch('/:id', beneficiaryController.updateBeneficiaryById);
-router.delete('/:id', beneficiaryController.deleteBeneficiaryById);
+router.post('/create', giftTransactionController.createGiftTransaction);
+router.get('/:id', giftTransactionController.getGiftTransactionById);
+router.get('/', giftTransactionController.getAllGiftTransactions);
+router.patch('/:id', giftTransactionController.updateGiftTransactionById);
+router.delete('/:id', giftTransactionController.deleteGiftTransactionById);
 
 module.exports = router;

@@ -1,29 +1,18 @@
 const prisma = require("../config/prismaConfig");
-const { validator, schemaForPurchaser } = require("../utils/validation");
 
-// Create a Purchaser
-function createPurchaser(req, res) {
-  const purchaser = {
-    nic: req.body.nic,
-    purchaserName: req.body.purchaserName,
-    purchaserAddress: req.body.purchaserAddress,
-    dob: req.body.dob,
-    isFirstProperty: req.body.isFirstProperty,
-    isSriLankanResident: req.body.isSriLankanResident,
-    isCompany: req.body.isCompany,
-    agentId: req.body.agentId,
+// Create a InheritanceTransaction
+function createInheritanceTransaction(req, res) {
+  const inheritanceTransaction = {
+    propertyAddress: req.body.propertyAddress,
+    type: req.body.type,
+    consideration: req.body.consideration,
+    effectiveDate: req.body.effectiveDate,
+    decendentName: req.body.decendentName,
+    decendentNIC: req.body.decendentNIC,
+    beneficiaryId: req.body.beneficiaryId,
   };
 
-  // Validate user input
-  const validationResponse = validator.validate(purchaser, schemaForPurchaser);
-
-  if (validationResponse !== true) {
-    res.status(400).json({
-      message: "Validation failed.",
-      errors: validationResponse,
-    });
-  } else {
-    prisma.purchaser
+  prisma.inheritanceTransaction
       .findUnique({
         where: {
           nic: req.body.nic,
@@ -32,20 +21,21 @@ function createPurchaser(req, res) {
       .then((data) => {
         if (data) {
           res.status(409).json({
-            message: "An purchaser already exists with the same NIC.",
+            message:
+              "An inheritanceTransaction already exists.",
           });
         } else {
-          prisma.purchaser
-            .create({ data: purchaser })
-            .then((createdPurchaser) => {
+          prisma.inheritanceTransaction
+            .create({ data: inheritanceTransaction })
+            .then((createdInheritanceTransaction) => {
               res.status(201).json({
-                message: "Purchaser created successfully.",
-                purchaser: createdPurchaser,
+                message: "InheritanceTransaction created successfully.",
+                inheritanceTransaction: createdInheritanceTransaction,
               });
             })
             .catch((err) => {
               res.status(500).json({
-                message: "Error creating the purchaser.",
+                message: "Error creating the inheritanceTransaction.",
                 error: err,
               });
             });
@@ -57,131 +47,137 @@ function createPurchaser(req, res) {
           error: err,
         });
       });
-  }
 }
 
-// Get purchaser by Id
-function getPurchaserById(req, res) {
-  prisma.purchaser
+// Get inheritanceTransaction by Id
+function getInheritanceTransactionById(req, res) {
+  prisma.inheritanceTransaction
     .findUnique({ where: { id: parseInt(req.params.id) } })
     .then((data) => {
       if (data) {
         res.status(200).json(data);
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "InheritanceTransaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error retrieving the purchaser.",
+        message: "Error retrieving the inheritanceTransaction.",
         error: err,
       });
     });
 }
 
-// Get purchaser by name
-function getPurchaserByName(req, res) {
-  const purchaserName = req.query.purchaserName;
-  prisma.purchaser
-    .findMany({ where: { purchaserName: { contains: purchaserName } } })
-    .then((purchasers) => {
-      if (purchasers) {
-        res.status(200).json(purchasers);
-      } else {
-        res.status(404).json({
-          message: "Purchaser not found",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Error retrieving the purchaser.",
-        error: err,
-      });
-    });
-}
-
-// Get all purchasers
-function getAllPurchasers(req, res) {
-  prisma.purchaser
+// Get all inheritanceTransactions
+function getAllInheritanceTransactions(req, res) {
+  prisma.inheritanceTransaction
     .findMany()
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error retrieving all purchasers.",
+        message: "Error retrieving all inheritanceTransactions.",
         error: err,
       });
     });
 }
 
-// Update purchaser by Id
-function updatePurchaserById(req, res) {
-  prisma.purchaser
+// Update inheritanceTransaction by Id
+function updateInheritanceTransactionById(req, res) {
+  prisma.inheritanceTransaction
     .update({
       where: { id: parseInt(req.params.id) },
       data: {
-        nic: req.body.nic,
-        purchaserName: req.body.purchaserName,
-        purchaserAddress: req.body.purchaserAddress,
-        dob: req.body.dob,
-        isFirstProperty: req.body.isFirstProperty,
-        isSriLankanResident: req.body.isSriLankanResident,
-        isCompany: req.body.isCompany,
-        agentId: req.body.agentId,
+        propertyAddress: req.body.propertyAddress,
+        type: req.body.type,
+        consideration: req.body.consideration,
+        effectiveDate: req.body.effectiveDate,
+        decendentName: req.body.decendentName,
+        decendentNIC: req.body.decendentNIC,
+        beneficiaryId: req.body.beneficiaryId,
       },
     })
-    .then((updatedPurchaser) => {
-      if (updatedPurchaser) {
+    .then((updatedInheritanceTransaction) => {
+      if (updatedInheritanceTransaction) {
         res.status(200).json({
-          message: "Purchaser updated successfully.",
-          purchaser: updatedPurchaser,
+          message: "InheritanceTransaction updated successfully.",
+          inheritanceTransaction: updatedInheritanceTransaction,
         });
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "InheritanceTransaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error updating the purchaser.",
+        message: "Error updating the inheritanceTransaction.",
         error: err,
       });
     });
 }
 
-// Delete purchaser by Id
-function deletePurchaserById(req, res) {
-  prisma.purchaser
+// Delete inheritanceTransaction by Id
+function deleteInheritanceTransactionById(req, res) {
+  prisma.inheritanceTransaction
     .delete({ where: { id: parseInt(req.params.id) } })
     .then((data) => {
       if (data) {
         res.status(200).json({
-          message: "Purchaser deleted successfully.",
+          message: "InheritanceTransaction deleted successfully.",
         });
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "InheritanceTransaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error deleting the purchaser.",
+        message: "Error deleting the inheritanceTransaction.",
+        error: err,
+      });
+    });
+}
+// Get inheritance transaction by property address and decedent NIC
+function getInheritanceTransactionId(req, res) {
+  const propertyAddress = req.query.propertyAddress;
+  const decedentNIC = req.query.decedentNIC;
+
+  prisma.inheritanceTransaction
+    .findFirst({
+      where: {
+        AND: [{ propertyAddress: propertyAddress }, { decedentNIC: decedentNIC }],
+      },
+    })
+    .then((inheritanceTransaction) => {
+      if (inheritanceTransaction) {
+        res.status(200).json({
+          inheritanceTransactionId: inheritanceTransaction.id,
+        });
+      } else {
+        res.status(404).json({
+          message: "Inheritance transaction not found",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        message: "Error retrieving the inheritance transaction",
         error: err,
       });
     });
 }
 
 module.exports = {
-  createPurchaser,
-  getPurchaserById,
-  getPurchaserByName,
-  getAllPurchasers,
-  updatePurchaserById,
-  deletePurchaserById,
+  createInheritanceTransaction,
+  getInheritanceTransactionById,
+  getAllInheritanceTransactions,
+  updateInheritanceTransactionById,
+  deleteInheritanceTransactionById,
+  getInheritanceTransactionId
 };

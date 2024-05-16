@@ -1,21 +1,19 @@
 const prisma = require("../config/prismaConfig");
-const { validator, schemaForPurchaser } = require("../utils/validation");
 
-// Create a Purchaser
-function createPurchaser(req, res) {
-  const purchaser = {
-    nic: req.body.nic,
-    purchaserName: req.body.purchaserName,
-    purchaserAddress: req.body.purchaserAddress,
-    dob: req.body.dob,
-    isFirstProperty: req.body.isFirstProperty,
-    isSriLankanResident: req.body.isSriLankanResident,
-    isCompany: req.body.isCompany,
-    agentId: req.body.agentId,
+// Create a GiftTransaction
+function createGiftTransaction(req, res) {
+  const giftTransaction = {
+    propertyAddress: req.body.propertyAddress,
+    type: req.body.type,
+    consideration: req.body.consideration,
+    effectiveDate: req.body.effectiveDate,
+    giverName: req.body.giverName,
+    giverNIC: req.body.giverNIC,
+    receiverId: req.body.receiverId,
   };
 
   // Validate user input
-  const validationResponse = validator.validate(purchaser, schemaForPurchaser);
+  const validationResponse = validator.validate(giftTransaction, schemaForGiftTransaction);
 
   if (validationResponse !== true) {
     res.status(400).json({
@@ -23,7 +21,7 @@ function createPurchaser(req, res) {
       errors: validationResponse,
     });
   } else {
-    prisma.purchaser
+    prisma.giftTransaction
       .findUnique({
         where: {
           nic: req.body.nic,
@@ -32,20 +30,20 @@ function createPurchaser(req, res) {
       .then((data) => {
         if (data) {
           res.status(409).json({
-            message: "An purchaser already exists with the same NIC.",
+            message: "A gift transaction already exists.",
           });
         } else {
-          prisma.purchaser
-            .create({ data: purchaser })
-            .then((createdPurchaser) => {
+          prisma.giftTransaction
+            .create({ data: giftTransaction })
+            .then((createdGiftTransaction) => {
               res.status(201).json({
-                message: "Purchaser created successfully.",
-                purchaser: createdPurchaser,
+                message: "Gift transaction created successfully.",
+                giftTransaction: createdGiftTransaction,
               });
             })
             .catch((err) => {
               res.status(500).json({
-                message: "Error creating the purchaser.",
+                message: "Error creating the gift transaction.",
                 error: err,
               });
             });
@@ -60,128 +58,136 @@ function createPurchaser(req, res) {
   }
 }
 
-// Get purchaser by Id
-function getPurchaserById(req, res) {
-  prisma.purchaser
+// Get giftTransaction by Id
+function getGiftTransactionById(req, res) {
+  prisma.giftTransaction
     .findUnique({ where: { id: parseInt(req.params.id) } })
     .then((data) => {
       if (data) {
         res.status(200).json(data);
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "GiftTransaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error retrieving the purchaser.",
+        message: "Error retrieving the giftTransaction.",
         error: err,
       });
     });
 }
 
-// Get purchaser by name
-function getPurchaserByName(req, res) {
-  const purchaserName = req.query.purchaserName;
-  prisma.purchaser
-    .findMany({ where: { purchaserName: { contains: purchaserName } } })
-    .then((purchasers) => {
-      if (purchasers) {
-        res.status(200).json(purchasers);
-      } else {
-        res.status(404).json({
-          message: "Purchaser not found",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Error retrieving the purchaser",
-        error: err,
-      });
-    });
-}
-
-// Get all purchasers
-function getAllPurchasers(req, res) {
-  prisma.purchaser
+// Get all giftTransactions
+function getAllGiftTransactions(req, res) {
+  prisma.giftTransaction
     .findMany()
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error retrieving all purchasers.",
+        message: "Error retrieving all giftTransactions.",
         error: err,
       });
     });
 }
 
-// Update purchaser by Id
-function updatePurchaserById(req, res) {
-  prisma.purchaser
+// Update giftTransaction by Id
+function updateGiftTransactionById(req, res) {
+  prisma.giftTransaction
     .update({
       where: { id: parseInt(req.params.id) },
       data: {
-        nic: req.body.nic,
-        purchaserName: req.body.purchaserName,
-        purchaserAddress: req.body.purchaserAddress,
-        dob: req.body.dob,
-        isFirstProperty: req.body.isFirstProperty,
-        isSriLankanResident: req.body.isSriLankanResident,
-        isCompany: req.body.isCompany,
-        agentId: req.body.agentId,
+        propertyAddress: req.body.propertyAddress,
+    type: req.body.type,
+    consideration: req.body.consideration,
+    effectiveDate: req.body.effectiveDate,
+    giverName: req.body.giverName,
+    giverNIC: req.body.giverNIC,
+    receiverId: req.body.receiverId,
       },
     })
-    .then((updatedPurchaser) => {
-      if (updatedPurchaser) {
+    .then((updatedGiftTransaction) => {
+      if (updatedGiftTransaction) {
         res.status(200).json({
-          message: "Purchaser updated successfully.",
-          purchaser: updatedPurchaser,
+          message: "Gift transaction updated successfully.",
+          giftTransaction: updatedGiftTransaction,
         });
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "Gift transaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error updating the purchaser.",
+        message: "Error updating the gift transaction.",
         error: err,
       });
     });
 }
 
-// Delete purchaser by Id
-function deletePurchaserById(req, res) {
-  prisma.purchaser
+// Delete giftTransaction by Id
+function deleteGiftTransactionById(req, res) {
+  prisma.giftTransaction
     .delete({ where: { id: parseInt(req.params.id) } })
     .then((data) => {
       if (data) {
         res.status(200).json({
-          message: "Purchaser deleted successfully.",
+          message: "Gift transaction deleted successfully.",
         });
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "Gift transaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error deleting the purchaser.",
+        message: "Error deleting the gift transaction.",
+        error: err,
+      });
+    });
+}
+
+// Get gift transaction by property address and giver NIC
+function getGiftTransactionId(req, res) {
+  const propertyAddress = req.query.propertyAddress;
+  const giverNIC = req.query.giverNIC;
+
+  prisma.giftTransaction
+    .findFirst({
+      where: {
+        AND: [{ propertyAddress: propertyAddress }, { giverNIC: giverNIC }],
+      },
+    })
+    .then((giftTransaction) => {
+      if (giftTransaction) {
+        res.status(200).json({
+          giftTransactionId: giftTransaction.id,
+        });
+      } else {
+        res.status(404).json({
+          message: "Gift transaction not found",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        message: "Error retrieving the gift transaction",
         error: err,
       });
     });
 }
 
 module.exports = {
-  createPurchaser,
-  getPurchaserById,
-  getPurchaserByName,
-  getAllPurchasers,
-  updatePurchaserById,
-  deletePurchaserById,
+  createGiftTransaction,
+  getGiftTransactionById,
+  getAllGiftTransactions,
+  updateGiftTransactionById,
+  deleteGiftTransactionById,
+  getGiftTransactionId
 };

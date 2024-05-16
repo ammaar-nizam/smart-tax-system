@@ -1,29 +1,18 @@
 const prisma = require("../config/prismaConfig");
-const { validator, schemaForPurchaser } = require("../utils/validation");
 
-// Create a Purchaser
-function createPurchaser(req, res) {
-  const purchaser = {
-    nic: req.body.nic,
-    purchaserName: req.body.purchaserName,
-    purchaserAddress: req.body.purchaserAddress,
-    dob: req.body.dob,
-    isFirstProperty: req.body.isFirstProperty,
-    isSriLankanResident: req.body.isSriLankanResident,
-    isCompany: req.body.isCompany,
+// Create a GiftReturn
+function createGiftReturn(req, res) {
+  const giftReturn = {
+    type: req.body.type,
+    taxDue: req.body.taxDue,
+    submitDate: req.body.submitDate,
+    deadlineDate: req.body.deadlineDate,
+    status: req.body.status,
+    transactionId: req.body.transactionId,
     agentId: req.body.agentId,
   };
 
-  // Validate user input
-  const validationResponse = validator.validate(purchaser, schemaForPurchaser);
-
-  if (validationResponse !== true) {
-    res.status(400).json({
-      message: "Validation failed.",
-      errors: validationResponse,
-    });
-  } else {
-    prisma.purchaser
+  prisma.giftReturn
       .findUnique({
         where: {
           nic: req.body.nic,
@@ -32,20 +21,20 @@ function createPurchaser(req, res) {
       .then((data) => {
         if (data) {
           res.status(409).json({
-            message: "An purchaser already exists with the same NIC.",
+            message: "An giftReturn already exists with the same NIC.",
           });
         } else {
-          prisma.purchaser
-            .create({ data: purchaser })
-            .then((createdPurchaser) => {
+          prisma.giftReturn
+            .create({ data: giftReturn })
+            .then((createdGiftReturn) => {
               res.status(201).json({
-                message: "Purchaser created successfully.",
-                purchaser: createdPurchaser,
+                message: "GiftReturn created successfully.",
+                giftReturn: createdGiftReturn,
               });
             })
             .catch((err) => {
               res.status(500).json({
-                message: "Error creating the purchaser.",
+                message: "Error creating the giftReturn.",
                 error: err,
               });
             });
@@ -57,131 +46,106 @@ function createPurchaser(req, res) {
           error: err,
         });
       });
-  }
 }
 
-// Get purchaser by Id
-function getPurchaserById(req, res) {
-  prisma.purchaser
+// Get giftReturn by Id
+function getGiftReturnById(req, res) {
+  prisma.giftReturn
     .findUnique({ where: { id: parseInt(req.params.id) } })
     .then((data) => {
       if (data) {
         res.status(200).json(data);
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "Gift Return not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error retrieving the purchaser.",
+        message: "Error retrieving the Gift Return.",
         error: err,
       });
     });
 }
 
-// Get purchaser by name
-function getPurchaserByName(req, res) {
-  const purchaserName = req.query.purchaserName;
-  prisma.purchaser
-    .findMany({ where: { purchaserName: { contains: purchaserName } } })
-    .then((purchasers) => {
-      if (purchasers) {
-        res.status(200).json(purchasers);
-      } else {
-        res.status(404).json({
-          message: "Purchaser not found",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Error retrieving the purchaser",
-        error: err,
-      });
-    });
-}
-
-// Get all purchasers
-function getAllPurchasers(req, res) {
-  prisma.purchaser
+// Get all giftReturns
+function getAllGiftReturns(req, res) {
+  prisma.giftReturn
     .findMany()
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error retrieving all purchasers.",
+        message: "Error retrieving all Gift Returns.",
         error: err,
       });
     });
 }
 
-// Update purchaser by Id
-function updatePurchaserById(req, res) {
-  prisma.purchaser
+// Update giftReturn by Id
+function updateGiftReturnById(req, res) {
+  prisma.giftReturn
     .update({
       where: { id: parseInt(req.params.id) },
       data: {
-        nic: req.body.nic,
-        purchaserName: req.body.purchaserName,
-        purchaserAddress: req.body.purchaserAddress,
-        dob: req.body.dob,
-        isFirstProperty: req.body.isFirstProperty,
-        isSriLankanResident: req.body.isSriLankanResident,
-        isCompany: req.body.isCompany,
+        type: req.body.type,
+        taxDue: req.body.taxDue,
+        submitDate: req.body.submitDate,
+        deadlineDate: req.body.deadlineDate,
+        status: req.body.status,
+        transactionId: req.body.transactionId,
         agentId: req.body.agentId,
       },
     })
-    .then((updatedPurchaser) => {
-      if (updatedPurchaser) {
+    .then((updatedGiftReturn) => {
+      if (updatedGiftReturn) {
         res.status(200).json({
-          message: "Purchaser updated successfully.",
-          purchaser: updatedPurchaser,
+          message: "Gift return updated successfully.",
+          giftReturn: updatedGiftReturn,
         });
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "Gift return not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error updating the purchaser.",
+        message: "Error updating the gift return.",
         error: err,
       });
     });
 }
 
-// Delete purchaser by Id
-function deletePurchaserById(req, res) {
-  prisma.purchaser
+// Delete giftReturn by Id
+function deleteGiftReturnById(req, res) {
+  prisma.giftReturn
     .delete({ where: { id: parseInt(req.params.id) } })
     .then((data) => {
       if (data) {
         res.status(200).json({
-          message: "Purchaser deleted successfully.",
+          message: "Gift return deleted successfully.",
         });
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "Gift return not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error deleting the purchaser.",
+        message: "Error deleting the giftReturn.",
         error: err,
       });
     });
 }
 
 module.exports = {
-  createPurchaser,
-  getPurchaserById,
-  getPurchaserByName,
-  getAllPurchasers,
-  updatePurchaserById,
-  deletePurchaserById,
+  createGiftReturn,
+  getGiftReturnById,
+  getAllGiftReturns,
+  updateGiftReturnById,
+  deleteGiftReturnById,
 };

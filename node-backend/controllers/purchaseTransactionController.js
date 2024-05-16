@@ -1,5 +1,4 @@
 const prisma = require("../config/prismaConfig");
-const { validator, schemaForPurchaser } = require("../utils/validation");
 
 // Create a Purchase Transaction
 function createPurchaseTransaction(req, res) {
@@ -12,7 +11,7 @@ function createPurchaseTransaction(req, res) {
     vendorNIC: req.body.vendorNIC,
     vendorAgentName: req.body.vendorAgentName,
     vendorAgentAddress: req.body.vendorAgentAddress,
-    purchaserId: req.body.purchaserId,
+    purchaseTransactionId: req.body.purchaseTransactionId,
   };
 
   prisma.purchaseTransaction
@@ -39,7 +38,7 @@ function createPurchaseTransaction(req, res) {
             });
           })
           .catch((err) => {
-            console.log(err)
+            console.log(err);
             res.status(500).json({
               message: "Error creating the transaction.",
               error: err,
@@ -56,44 +55,22 @@ function createPurchaseTransaction(req, res) {
     });
 }
 
-// Get purchaser by Id
-function getPurchaserById(req, res) {
-  prisma.purchaser
+// Get purchaseTransaction by Id
+function getPurchaseTransactionById(req, res) {
+  prisma.purchaseTransaction
     .findUnique({ where: { id: parseInt(req.params.id) } })
     .then((data) => {
       if (data) {
         res.status(200).json(data);
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "Purchase transaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error retrieving the purchaser.",
-        error: err,
-      });
-    });
-}
-
-// Get purchaser by name
-function getPurchaserByName(req, res) {
-  const purchaserName = req.query.purchaserName;
-  prisma.purchaser
-    .findMany({ where: { purchaserName: { contains: purchaserName } } })
-    .then((purchasers) => {
-      if (purchasers) {
-        res.status(200).json(purchasers);
-      } else {
-        res.status(404).json({
-          message: "Purchaser not found",
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Error retrieving the purchaser",
+        message: "Error retrieving the purchase transaction.",
         error: err,
       });
     });
@@ -114,77 +91,75 @@ function getAllPurchaseTransactions(req, res) {
     });
 }
 
-// Update purchaser by Id
-function updatePurchaserById(req, res) {
-  prisma.purchaser
+// Update purchaseTransaction by Id
+function updatePurchaseTransactionById(req, res) {
+  prisma.purchaseTransaction
     .update({
       where: { id: parseInt(req.params.id) },
       data: {
-        nic: req.body.nic,
-        purchaserName: req.body.purchaserName,
-        purchaserAddress: req.body.purchaserAddress,
-        dob: req.body.dob,
-        isFirstProperty: req.body.isFirstProperty,
-        isSriLankanResident: req.body.isSriLankanResident,
-        isCompany: req.body.isCompany,
-        agentId: req.body.agentId,
+        propertyAddress: req.body.propertyAddress,
+        type: req.body.type,
+        consideration: req.body.consideration,
+        effectiveDate: req.body.effectiveDate,
+        vendorName: req.body.vendorName,
+        vendorNIC: req.body.vendorNIC,
+        vendorAgentName: req.body.vendorAgentName,
+        vendorAgentAddress: req.body.vendorAgentAddress,
+        purchaseTransactionId: req.body.purchaseTransactionId,
       },
     })
-    .then((updatedPurchaser) => {
-      if (updatedPurchaser) {
+    .then((updatedPurchaseTransaction) => {
+      if (updatedPurchaseTransaction) {
         res.status(200).json({
-          message: "Purchaser updated successfully.",
-          purchaser: updatedPurchaser,
+          message: "Purchase transaction updated successfully.",
+          purchaseTransaction: updatedPurchaseTransaction,
         });
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "Purchase transaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error updating the purchaser.",
+        message: "Error updating the purchase transaction.",
         error: err,
       });
     });
 }
 
-// Delete purchaser by Id
-function deletePurchaserById(req, res) {
-  prisma.purchaser
+// Delete purchaseTransaction by Id
+function deletePurchaseTransactionById(req, res) {
+  prisma.purchaseTransaction
     .delete({ where: { id: parseInt(req.params.id) } })
     .then((data) => {
       if (data) {
         res.status(200).json({
-          message: "Purchaser deleted successfully.",
+          message: "Purchase transaction deleted successfully.",
         });
       } else {
         res.status(404).json({
-          message: "Purchaser not found",
+          message: "Purchase transaction not found",
         });
       }
     })
     .catch((err) => {
       res.status(500).json({
-        message: "Error deleting the purchaser.",
+        message: "Error deleting the purchase transaction.",
         error: err,
       });
     });
 }
 
-// Get purchase transaction by property address and effective date
+// Get purchase transaction by property address and vendor NIC
 function getPurchaseTransactionId(req, res) {
   const propertyAddress = req.query.propertyAddress;
   const vendorNIC = req.query.vendorNIC;
-  
+
   prisma.purchaseTransaction
     .findFirst({
       where: {
-        AND: [
-          { propertyAddress: propertyAddress },
-          { vendorNIC: vendorNIC },
-        ],
+        AND: [{ propertyAddress: propertyAddress }, { vendorNIC: vendorNIC }],
       },
     })
     .then((purchaseTransaction) => {
@@ -199,7 +174,7 @@ function getPurchaseTransactionId(req, res) {
       }
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err);
       res.status(500).json({
         message: "Error retrieving the purchase transaction",
         error: err,
@@ -209,10 +184,9 @@ function getPurchaseTransactionId(req, res) {
 
 module.exports = {
   createPurchaseTransaction,
-  getPurchaserById,
-  getPurchaserByName,
+  getPurchaseTransactionById,
   getAllPurchaseTransactions,
-  updatePurchaserById,
-  deletePurchaserById,
-  getPurchaseTransactionId
+  updatePurchaseTransactionById,
+  deletePurchaseTransactionById,
+  getPurchaseTransactionId,
 };
