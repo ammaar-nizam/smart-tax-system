@@ -1,18 +1,18 @@
-// Calculate EstateDutyTax
+// Calculate GiftTax
 
-export function calculateEstateDutyTax(purchaser, purchaseTransaction) {
+export function calculateGiftTax(receiver, giftTransaction) {
   const {
     isFirstProperty,
     isSriLankanResident,
     isCompany
-  } = purchaser;
+  } = receiver;
 
   const {
     type,
     consideration,
     effectiveDate
-  } = purchaseTransaction;
-
+  } = giftTransaction;
+  
   // Get the current date
   const currentDate = new Date();
 

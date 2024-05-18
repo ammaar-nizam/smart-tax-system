@@ -1,48 +1,212 @@
-import React from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import axios from "axios";
 import { Outlet } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import { calculateGiftTax } from "./CalculateGiftTax.js";
+import { formatDate } from "../../utils/dateUtils.js";
 
-const schema = z.object({
-  propertyAddress: z
+const schema = yup.object({
+  receiverNIC: yup
     .string()
-    .nonempty({ message: "Property Address cannot be empty." }),
-  propertyType: z.string().nonempty(),
-  consideration: z.string(),
-  effectiveDate: z.string().nonempty(),
-  receiverName: z.string().nonempty(),
-  receiverNIC: z.string().regex(/^(?:\d{9}[Vv])$|^(?:\d{12})$/),
-  receiverAddress: z.string().nonempty(),
-  dob: z.string().nonempty(),
-  isFirstProperty: z.boolean(),
-  isSriLankanResident: z.boolean(),
-  isCompany: z.boolean(),
-  receiverAgentName: z.string().nonempty(),
-  receiverAgentAddress: z.string().nonempty(),
-  receiverAgentEmail: z.string().email(),
-  giverName: z.string().nonempty(),
-  giverNIC: z.string().regex(/^(?:\d{9}[Vv])$|^(?:\d{12})$/),
+    .required("Required Field")
+    .matches(/^(?:\d{9}[Vv])$|^(?:\d{12})$/, "Invalid NIC format"),
+  receiverName: yup.string().required("Required Field"),
+  receiverAddress: yup.string().required("Required Field"),
+  dob: yup.date().required("Required Field"),
+  isFirstProperty: yup.string().required("Required Field"),
+  isSriLankanResident: yup.string().required("Required Field"),
+  isCompany: yup.string().required("Required Field"),
+  propertyAddress: yup.string().required("Required Field"),
+  type: yup.string().required("Required Field"),
+  consideration: yup
+    .number()
+    .required("Required Field")
+    .positive("Consideration must be a positive value"),
+  effectiveDate: yup.date().required("Required Field"),
+  giverName: yup.string().required("Required Field"),
+  giverNIC: yup
+    .string()
+    .required("Required Field")
+    .matches(/^(?:\d{9}[Vv])$|^(?:\d{12})$/, "Invalid Vendor NIC format"),
 });
 
 const GiftTax = () => {
+  const [id, setId] = useState("");
+  const [agentName, setAgentName] = useState("");
+  const [agentEmail, setAgentEmail] = useState("");
+  const [agentAddress, setAgentAddress] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [taxResult, setTaxResult] = useState(null);
+  const [formData, setFormData] = useState(null);
+  const [showConfirmButton, setShowConfirmButton] = useState(false);
+  const [showSubmitButton, setShowSubmitButton] = useState(false);
+  const [showCalculateButton, setShowCalculateButton] = useState(true);
+  const [confirmationClicked, setConfirmationClicked] = useState(false);
+
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    const accessToken = Cookies.get("access_token");
+    if (accessToken) {
+      setAccessToken(accessToken);
+      const decodedToken = jwtDecode(accessToken);
+      setId(decodedToken.id);
+      setAgentName(decodedToken.agentName);
+      setAgentEmail(decodedToken.agentEmail);
+      setAgentAddress(decodedToken.agentAddress);
+    }
+  }, []);
 
   const onSubmit = async (data) => {
     try {
-      // Your form submission logic goes here
-      console.log(data);
+      const formattedDOB = formatDate(data.dob);
+      const formattedEffectiveDate = formatDate(data.effectiveDate);
+      // Get the current date
+      const currentDate = formatDate(new Date().toISOString());
+      // Calculate the deadline date (14 days from the current date)
+      const deadlineDate = new Date();
+      deadlineDate.setDate(deadlineDate.getDate() + 14);
+      const formattedDeadlineDate = formatDate(deadlineDate.toISOString());
+      const formData = {
+        receiver: {
+          receiverNIC: data.receiverNIC,
+          receiverName: data.receiverName,
+          receiverAddress: data.receiverAddress,
+          dob: formattedDOB,
+          isCompany:
+            data.isCompany === "true"
+              ? true
+              : data.isCompany === "false"
+              ? false
+              : data.isCompany,
+          isSriLankanResident:
+            data.isSriLankanResident === "true"
+              ? true
+              : data.isSriLankanResident === "false"
+              ? false
+              : data.isSriLankanResident,
+          isFirstProperty:
+            data.isFirstProperty === "true"
+              ? true
+              : data.isFirstProperty === "false"
+              ? false
+              : data.isFirstProperty,
+          agentId: id,
+        },
+        giftTransaction: {
+          propertyAddress: data.propertyAddress,
+          type: data.type,
+          consideration: data.consideration,
+          effectiveDate: formattedEffectiveDate,
+          giverName: data.giverName,
+          giverNIC: data.giverNIC,
+          receiverId: 0,
+        },
+        giftReturn: {
+          type: "GIFT",
+          taxDue: 0,
+          submitDate: currentDate,
+          deadlineDate: formattedDeadlineDate,
+          status: "FILED",
+          agentId: id,
+          transactionId: 0,
+        },
+      };
+
+      setFormData(formData);
+      // Calculate tax using the provided function
+      const taxResult = calculateGiftTax(
+        formData.receiver,
+        formData.giftTransaction
+      );
+
+      console.log(formData.giftTransaction.consideration);
+      // Set the tax result in state
+      setTaxResult(taxResult);
+      setShowConfirmButton(true);
+      setShowCalculateButton(false);
     } catch (error) {
-      setError("root", {
-        message: "An error occurred while submitting the form",
-      });
+      console.log(error);
+    }
+  };
+
+  const onConfirm = () => {
+    setShowConfirmButton(false);
+    setShowSubmitButton(true);
+    setConfirmationClicked(true);
+  };
+
+  const onFinalSubmit = async () => {
+    try {
+      const receiverResponse = await axios.post(
+        "http://localhost:8000/api/receivers/create",
+        formData.receiver,
+        {
+          headers: {
+            Authorization: "Bearer " + accessToken,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      try {
+        const retrievedGiftTransactionId = await axios.get(
+          `http://localhost:8000/api/receivers/nic?receiverNIC=${formData.receiver.receiverNIC}`
+        );
+        formData.giftTransaction.receiverId = retrievedGiftTransactionId.data.id;
+        const giftTransactionResponse = await axios.post(
+          "http://localhost:8000/api/gift-transactions/create",
+          formData.giftTransaction
+        );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        try {
+          const retrievedGiftTransactionId = await axios.get(
+            `http://localhost:8000/api/gift-transactions/transaction?propertyAddress=${formData.giftTransaction.propertyAddress}&giverNIC=${formData.giftTransaction.giverNIC}`
+          );
+          console.log(retrievedGiftTransactionId.data.id);
+          formData.giftReturn.transactionId =
+            retrievedGiftTransactionId.data.giftTransactionId;
+          formData.giftReturn.taxDue = taxResult.totalTax;
+          // Call API to create a Gift return
+          const giftReturnResponse = await axios.post(
+            "http://localhost:8000/api/gift-returns/create",
+            formData.giftReturn
+          );
+          alert("Tax return submitted successfully!");
+          setFormData({
+            ...formData,
+            receiver: null,
+          });
+          setFormData({
+            ...formData,
+            giftTransaction: null,
+          });
+          setFormData({
+            ...formData,
+            giftReturn: null,
+          });
+          setShowSubmitButton(false);
+          setShowConfirmButton(false);
+          setShowCalculateButton(true);
+
+          setConfirmationClicked(true);
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
   };
 
@@ -57,7 +221,11 @@ const GiftTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Property Address:</label>
-                <input {...register("propertyAddress")} type="text" />
+                <input
+                  {...register("propertyAddress")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.propertyAddress && (
                   <div className="error-message">
                     {errors.propertyAddress.message}
@@ -70,7 +238,12 @@ const GiftTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Type of Property:</label>
-                <select {...register("propertyType")} defaultValue="">
+                <select
+                  {...register("propertyType")}
+                  defaultValue=""
+                  type="type"
+                  disabled={confirmationClicked}
+                >
                   <option value="">Select</option>
                   <option value="residential">Residential</option>
                   <option value="commercial">Commercial</option>
@@ -87,10 +260,7 @@ const GiftTax = () => {
                 <input
                   {...register("consideration")}
                   type="text"
-                  onChange={(e) => {
-                    const value = parseFloat(e.target.value);
-                    setValue("consideration", value || ""); // If value is NaN, set it to an empty string
-                  }}
+                  disabled={confirmationClicked}
                 />
                 {errors.consideration && (
                   <div className="error-message">
@@ -100,7 +270,11 @@ const GiftTax = () => {
               </div>
               <div className="form-field">
                 <label>Effective Date:</label>
-                <input {...register("effectiveDate")} type="date" />
+                <input
+                  {...register("effectiveDate")}
+                  type="date"
+                  disabled={confirmationClicked}
+                />
                 {errors.effectiveDate && (
                   <div className="error-message">
                     {errors.effectiveDate.message}
@@ -113,7 +287,11 @@ const GiftTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Receiver Name:</label>
-                <input {...register("receiverName")} type="text" />
+                <input
+                  {...register("receiverName")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.receiverName && (
                   <div className="error-message">
                     {errors.receiverName.message}
@@ -122,7 +300,11 @@ const GiftTax = () => {
               </div>
               <div className="form-field">
                 <label>Receiver NIC Number:</label>
-                <input {...register("receiverNIC")} type="text" />
+                <input
+                  {...register("receiverNIC")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.receiverNIC && (
                   <div className="error-message">
                     {errors.receiverNIC.message}
@@ -134,7 +316,11 @@ const GiftTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Receiver Address:</label>
-                <input {...register("receiverAddress")} type="text" />
+                <input
+                  {...register("receiverAddress")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.receiverAddress && (
                   <div className="error-message">
                     {errors.receiverAddress.message}
@@ -146,7 +332,12 @@ const GiftTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>First Time Buyer?:</label>
-                <select {...register("isFirstProperty")} defaultValue="">
+                <select
+                  {...register("isFirstProperty")}
+                  defaultValue=""
+                  type="text"
+                  disabled={confirmationClicked}
+                >
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -160,7 +351,12 @@ const GiftTax = () => {
 
               <div className="form-field">
                 <label>Receiver a Company?:</label>
-                <select {...register("isCompany")} defaultValue="">
+                <select
+                  {...register("isCompany")}
+                  defaultValue=""
+                  type="text"
+                  disabled={confirmationClicked}
+                >
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -176,7 +372,12 @@ const GiftTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Sri Lankan Resident?:</label>
-                <select {...register("isSriLankanResident")} defaultValue="">
+                <select
+                  {...register("isSriLankanResident")}
+                  defaultValue=""
+                  type="text"
+                  disabled={confirmationClicked}
+                >
                   <option value="">Select</option>
                   <option value="true">Yes</option>
                   <option value="false">No</option>
@@ -189,7 +390,11 @@ const GiftTax = () => {
               </div>
               <div className="form-field">
                 <label>Receiver Date of Birth:</label>
-                <input {...register("dob")} type="date" />
+                <input
+                  {...register("dob")}
+                  type="date"
+                  disabled={confirmationClicked}
+                />
                 {errors.dob && (
                   <div className="error-message">{errors.dob.message}</div>
                 )}
@@ -199,33 +404,36 @@ const GiftTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Receiver Agent Name:</label>
-                <input {...register("receiverAgentName")} type="text" />
-                {errors.receiverAgentName && (
-                  <div className="error-message">
-                    {errors.receiverAgentName.message}
-                  </div>
-                )}
+                <input
+                  {...register("receiverAgentName")}
+                  defaultValue={agentName}
+                  type="text"
+                  disabled={confirmationClicked}
+                  readOnly
+                />
               </div>
               <div className="form-field">
                 <label>Receiver Agent Email:</label>
-                <input {...register("receiverAgentEmail")} type="text" />
-                {errors.receiverAgentEmail && (
-                  <div className="error-message">
-                    {errors.receiverAgentEmail.message}
-                  </div>
-                )}
+                <input
+                  {...register("receiverAgentEmail")}
+                  defaultValue={agentEmail}
+                  type="text"
+                  disabled={confirmationClicked}
+                  readOnly
+                />
               </div>
             </div>
             {/* Eigth row */}
             <div className="form-row">
               <div className="form-field">
                 <label>Receiver Agent Address:</label>
-                <input {...register("receiverAgentAddress")} type="text" />
-                {errors.receiverAgentAddress && (
-                  <div className="error-message">
-                    {errors.receiverAgentAddress.message}
-                  </div>
-                )}
+                <input
+                  {...register("receiverAgentAddress")}
+                  defaultValue={agentAddress}
+                  type="text"
+                  disabled={confirmationClicked}
+                  readOnly
+                />
               </div>
             </div>
             {/* Nineth row */}
@@ -233,7 +441,11 @@ const GiftTax = () => {
             <div className="form-row">
               <div className="form-field">
                 <label>Giver Name:</label>
-                <input {...register("giverName")} type="text" />
+                <input
+                  {...register("giverName")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.giverName && (
                   <div className="error-message">
                     {errors.giverName.message}
@@ -243,23 +455,47 @@ const GiftTax = () => {
 
               <div className="form-field">
                 <label>Giver NIC Number:</label>
-                <input {...register("giverNIC")} type="text" />
+                <input
+                  {...register("giverNIC")}
+                  type="text"
+                  disabled={confirmationClicked}
+                />
                 {errors.giverNIC && (
-                  <div className="error-message">
-                    {errors.giverNIC.message}
-                  </div>
+                  <div className="error-message">{errors.giverNIC.message}</div>
                 )}
               </div>
             </div>
-            
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="submit-button"
-            >
-              {isSubmitting ? "Submitting..." : "File Return"}
-            </button>
+            {taxResult && (
+              <div>
+                <h3>Calculated Tax Details</h3>
+                <p>Gift Tax Due: {taxResult.tax}</p>
+                <p>Penalty Charged: {taxResult.penalty}</p>
+                <p>Total Tax Due: {taxResult.totalTax}</p>
+              </div>
+            )}
+
+            {showConfirmButton && (
+              <button className="submit-button" onClick={onConfirm}>
+                Confirm Calculation
+              </button>
+            )}
+
+            {showSubmitButton && (
+              <button className="submit-button" onClick={onFinalSubmit}>
+                Submit Tax Return
+              </button>
+            )}
+
+            {showCalculateButton && (
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="submit-button"
+              >
+                {isSubmitting ? "Calculating..." : "Calculate Gift Tax"}
+              </button>
+            )}
             {errors.root && <div>{errors.root.message}</div>}
           </form>
         </div>

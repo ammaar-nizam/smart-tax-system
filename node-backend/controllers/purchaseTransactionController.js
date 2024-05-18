@@ -11,7 +11,7 @@ function createPurchaseTransaction(req, res) {
     vendorNIC: req.body.vendorNIC,
     vendorAgentName: req.body.vendorAgentName,
     vendorAgentAddress: req.body.vendorAgentAddress,
-    purchaseTransactionId: req.body.purchaseTransactionId,
+    purchaserId: req.body.purchaserId,
   };
 
   prisma.purchaseTransaction
@@ -105,7 +105,7 @@ function updatePurchaseTransactionById(req, res) {
         vendorNIC: req.body.vendorNIC,
         vendorAgentName: req.body.vendorAgentName,
         vendorAgentAddress: req.body.vendorAgentAddress,
-        purchaseTransactionId: req.body.purchaseTransactionId,
+        purchaserId: req.body.purchaserId,
       },
     })
     .then((updatedPurchaseTransaction) => {

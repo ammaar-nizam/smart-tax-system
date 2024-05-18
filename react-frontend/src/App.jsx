@@ -1,6 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Website from "./pages/Website";
 import { Suspense } from "react";
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+
+import Website from "./pages/Website";
 import Layout from "./components/Layout/Layout";
 import Services from "./pages/Services/Services";
 import Guidance from "./pages/Guidance/Guidance";
@@ -12,6 +15,9 @@ import SignIn from "./pages/SignIn/SignIn";
 import AuthLayout from "./components/Layout/AuthLayout";
 import EducationalResources from "./pages/EducationalResources/EducationalResources";
 import RegisterForm from "./pages/Register/Register";
+import PaymentForm from './pages/Payment/Payment';
+
+const stripePromise = loadStripe(process.env.PUBLISHABLE_KEY);
 
 function App() {
   return (
@@ -46,6 +52,14 @@ function App() {
             <Route path="https://www.rgd.gov.lk/" />
             <Route path="/guidance" element={<Guidance />} />
             <Route path="/feedback" element={<Feedback />} />
+            <Route 
+              path="/payment-form" 
+              element={
+                <Elements stripe={stripePromise}>
+                  <PaymentForm />
+                </Elements>
+              } 
+            />
           </Route>
         </Routes>
       </Suspense>

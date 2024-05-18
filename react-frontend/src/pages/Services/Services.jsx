@@ -95,7 +95,7 @@ const Services = () => {
           <Grid xs={6}>
             {accessToken ? (
               <Grid xs={6}>
-                <Item component={Link} to="/easy-tax-payment">
+                <Item component={Link} to="/payment-form">
                   Easy Tax Payment
                 </Item>
               </Grid>

@@ -133,7 +133,6 @@ const EstateDutyTax = () => {
         formData.purchaseTransaction
       );
 
-      console.log(formData.purchaseTransaction.consideration)
       // Set the tax result in state
       setTaxResult(taxResult);
       setShowConfirmButton(true);
