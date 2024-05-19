@@ -153,6 +153,17 @@ a {
   margin-left: 20px;
 }
 
+.button-row {
+  display: flex;
+  justify-content: center; /* Centers the buttons horizontally */
+  margin-top: 20px; /* Adjust as needed */
+}
+
+.button-row .submit-button {
+  margin: 0 10px; /* Adjust the horizontal margin between buttons */
+}
+
+
 .error-message {
   color: red;
 }

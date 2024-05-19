@@ -6,20 +6,23 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { format } from "date-fns";
 
-const PurchaseTransactions = () => {
+const Receivers = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
   
-    const [purchaseTransactions, setPurchaseTransactions] = useState([]);
+    const [receivers, setReceivers] = useState([]);
   
-    const getPurchaseTransactions = async () => {
+    const getReceivers = async () => {
       try {
-        const response = await Axios.get("https://smart-tax-api.vercel.app/api/purchase-transactions");
+        const response = await Axios.get("https://smart-tax-api.vercel.app/api/receivers");
         const data = response.data.map((item) => ({
           ...item,
-          effectiveDate: format(new Date(item.effectiveDate), "yyyy-MM-dd")
+          dob: format(new Date(item.dob), "yyyy-MM-dd"),
+          isFirstProperty: item.isFirstProperty ? "Yes" : "No",
+          isSriLankanResident: item.isSriLankanResident ? "Yes" : "No",
+          isCompany: item.isCompany ? "Yes" : "No",
         }));
-        setPurchaseTransactions(data);
+        setReceivers(data);
       } catch (error) {
         console.log(error);
       }
@@ -27,27 +30,25 @@ const PurchaseTransactions = () => {
   
     // change title
     useEffect(() => {
-      document.title = "Purchase Transactions | SMART TAX";
-      getPurchaseTransactions();
+      document.title = "Receivers | SMART TAX";
+      getReceivers();
     }, []);
   
     const columns = [
       { field: "id", headerName: "ID", flex: 0.2 },
-      { field: "propertyAddress", headerName: "PROPERTY", flex: 0.5 },
-      { field: "type", headerName: "TYPE", flex: 0.3 },
-      { field: "consideration", headerName: "CONSIDERATION", flex: 0.3 },
-      { field: "effectiveDate", headerName: "EFFECTIVE DATE", flex: 0.3 },
-      { field: "vendorName", headerName: "VENDOR NAME", flex: 0.3 },
-      { field: "vendorNIC", headerName: "VENDOR NIC", flex: 0.3 },
-      { field: "vendorAgentName", headerName: "VENDOR AGENT", flex: 0.3 },
-      { field: "vendorAgentAddress", headerName: "AGENT ADDRESS", flex: 0.3 },
-      { field: "purchaserId", headerName: "PURCHASER ID", flex: 0.3 }
+      { field: "receiverName", headerName: "RECEIVER NAME", flex: 0.4 },
+      { field: "nic", headerName: "NIC", flex: 0.3 },
+      { field: "dob", headerName: "DATE OF BIRTH", flex: 0.5 },
+      { field: "isFirstProperty", headerName: "FIRST TIME BUYER", flex: 0.3 },
+      { field: "isSriLankanResident", headerName: "SRI LANKAN", flex: 0.3 },
+      { field: "isCompany", headerName: "COMPANY", flex: 0.3 },
+      { field: "agentId", headerName: "AGENT ID", flex: 0.3 }
     ];
   
     return (
       
       <Box>
-        <Header title="Purchase Transactions" subtitle="All Purchase Transactions Data" />
+        <Header title="Receivers" subtitle="All Receivers Data" />
         <Box
           m="0 0 5px 5px"
           height="100vh"
@@ -65,7 +66,7 @@ const PurchaseTransactions = () => {
           }}
         >
           <DataGrid
-            rows={purchaseTransactions}
+            rows={receivers}
             columns={columns}
             getRowId={(row) => row.id}
             components={{ Toolbar: GridToolbar }}
@@ -75,4 +76,4 @@ const PurchaseTransactions = () => {
     );
   };
   
-  export default PurchaseTransactions;
+  export default Receivers;

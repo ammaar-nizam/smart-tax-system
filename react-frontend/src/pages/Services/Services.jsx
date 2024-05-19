@@ -115,7 +115,7 @@ const Services = () => {
               <Grid xs={6}>
                 <Item
                   component={Link}
-                  to="/search-property-ownership-information"
+                  to="/under-development"
                 >
                   Search Property Ownership Information
                 </Item>
@@ -137,7 +137,7 @@ const Services = () => {
               <Grid xs={6}>
                 <Item
                   component={Link}
-                  to="/gift-and-inheritance-related-document-records"
+                  to="/under-development"
                 >
                   Gift and Inheritance Related Document Records
                 </Item>
@@ -156,13 +156,13 @@ const Services = () => {
           </Grid>
 
           <Grid xs={6}>
-            <Item component={Link} to="/search-house-prices">
+            <Item component={Link} to="/under-development">
               Search House Prices
             </Item>
           </Grid>
 
           <Grid xs={6}>
-            <Item component={Link} to="/value-assessment">
+            <Item component={Link} to="/under-development">
               Value Assessment
             </Item>
           </Grid>

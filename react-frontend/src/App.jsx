@@ -16,6 +16,7 @@ import AuthLayout from "./components/Layout/AuthLayout";
 import EducationalResources from "./pages/EducationalResources/EducationalResources";
 import RegisterForm from "./pages/Register/Register";
 import PaymentForm from './pages/Payment/Payment';
+import UnderDevelopmentPage from "./pages/UnderDevelopmentPage";
 
 const stripePromise = loadStripe("pk_test_51PI2ZjSJLIdqTI05GmF4edWPhzL6bgFPFPaBTB6pv6VH8MpUhQZQa0iIV3Aanh4S9tKwpe6DnZ45ZWvuP1rLwmyi00gEQY2vxL");
 
@@ -35,15 +36,16 @@ function App() {
             <Route path="/gift-tax" element={<GiftTax />} />
             <Route path="/inheritance-tax" element={<InheritanceTax />} />
             <Route path="/easy-tax-payment" element={<EstateDutyTax />} />
-            <Route path="/value-assessment" element={<EstateDutyTax />} />
+            <Route path="/under-development"
+              element={<UnderDevelopmentPage />} />
             <Route
-              path="/search-property-ownership-information"
-              element={<EstateDutyTax />}
+              path="/under-development"
+              element={<UnderDevelopmentPage />}
             />
             <Route path="/search-house-prices" element={<EstateDutyTax />} />
             <Route
-              path="/gift-and-inheritance-related-document-records"
-              element={<EstateDutyTax />}
+              path="/under-development"
+              element={<UnderDevelopmentPage />}
             />
             <Route
               path="/read-educational-resources"

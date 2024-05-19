@@ -72,7 +72,7 @@ const AgentCreateForm = () => {
     let agentPassword = values.agentPassword;
 
     try {
-      const response = Axios.post("http://localhost:8000/api/agents/register", {
+      const response = Axios.post("https://smart-tax-api.vercel.app/api/agents/register", {
         agentName,
         businessRegistrationNumber,
         agentAddress,

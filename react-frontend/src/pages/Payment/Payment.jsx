@@ -49,8 +49,6 @@ const PaymentForm = () => {
 
   const handleCheckout = async () => {
 
-
-
     const response = await axios.post(
       "https://smart-tax-api.vercel.app/api/payments/create-checkout-session",
       {

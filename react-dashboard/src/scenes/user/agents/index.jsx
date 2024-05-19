@@ -15,7 +15,7 @@ const Agents = () => {
 
   const getAgents = async () => {
     try{
-      const data = await Axios.get("http://localhost:8000/api/agents");
+      const data = await Axios.get("https://smart-tax-api.vercel.app/api/agents");
       console.log(data.data);
       setAgents(data.data);
     }catch(error){

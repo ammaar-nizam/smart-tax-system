@@ -1,0 +1,30 @@
+.app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden; /* Prevent main content from scrolling */
+}
+
+.sidebar {
+  width: 370px;
+  height: 100vh;
+  overflow-y: auto; /* Enable vertical scrolling for the sidebar */
+  background-color: #f4f4f4;
+  padding: 1rem;
+}
+
+.content {
+  flex-grow: 1;
+  overflow-y: auto; /* Enable vertical scrolling for main content if necessary */
+  background-color: #fff;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  top: 0;
+  z-index: 1000;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

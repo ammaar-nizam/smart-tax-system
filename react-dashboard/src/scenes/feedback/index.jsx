@@ -31,7 +31,7 @@ const Feedback = () => {
 
   const getFeedback = async () => {
     try {
-      const data = await Axios.get("http://localhost:8000/api/feedbacks/");
+      const data = await Axios.get("https://smart-tax-api.vercel.app/api/feedbacks/");
       console.log(data.data);
       setFeedbackData(data.data);
     } catch (error) {
@@ -49,7 +49,7 @@ const Feedback = () => {
       console.log(updatedFeedback);
   
       await Axios.patch(
-        `http://localhost:8000/api/feedbacks/${selectedFeedbackId}`,
+        `https://smart-tax-api.vercel.app/api/feedbacks/${selectedFeedbackId}`,
         updatedFeedback
       );
       getFeedback(); // Refresh data after successful update

@@ -6,20 +6,20 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { format } from "date-fns";
 
-const PurchaseTransactions = () => {
+const GiftTransactions = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
   
-    const [purchaseTransactions, setPurchaseTransactions] = useState([]);
+    const [giftTransactions, setGiftTransactions] = useState([]);
   
-    const getPurchaseTransactions = async () => {
+    const getGiftTransactions = async () => {
       try {
-        const response = await Axios.get("https://smart-tax-api.vercel.app/api/purchase-transactions");
+        const response = await Axios.get("https://smart-tax-api.vercel.app/api/gift-transactions");
         const data = response.data.map((item) => ({
           ...item,
           effectiveDate: format(new Date(item.effectiveDate), "yyyy-MM-dd")
         }));
-        setPurchaseTransactions(data);
+        setGiftTransactions(data);
       } catch (error) {
         console.log(error);
       }
@@ -27,8 +27,8 @@ const PurchaseTransactions = () => {
   
     // change title
     useEffect(() => {
-      document.title = "Purchase Transactions | SMART TAX";
-      getPurchaseTransactions();
+      document.title = "Gift Transactions | SMART TAX";
+      getGiftTransactions();
     }, []);
   
     const columns = [
@@ -37,17 +37,15 @@ const PurchaseTransactions = () => {
       { field: "type", headerName: "TYPE", flex: 0.3 },
       { field: "consideration", headerName: "CONSIDERATION", flex: 0.3 },
       { field: "effectiveDate", headerName: "EFFECTIVE DATE", flex: 0.3 },
-      { field: "vendorName", headerName: "VENDOR NAME", flex: 0.3 },
-      { field: "vendorNIC", headerName: "VENDOR NIC", flex: 0.3 },
-      { field: "vendorAgentName", headerName: "VENDOR AGENT", flex: 0.3 },
-      { field: "vendorAgentAddress", headerName: "AGENT ADDRESS", flex: 0.3 },
-      { field: "purchaserId", headerName: "PURCHASER ID", flex: 0.3 }
+      { field: "giverName", headerName: "GIVER NAME", flex: 0.3 },
+      { field: "giverNIC", headerName: "GIVER NIC", flex: 0.3 },
+      { field: "receiverId", headerName: "RECEIVER ID", flex: 0.3 }
     ];
   
     return (
       
       <Box>
-        <Header title="Purchase Transactions" subtitle="All Purchase Transactions Data" />
+        <Header title="Gift Transactions" subtitle="All Gift Transactions Data" />
         <Box
           m="0 0 5px 5px"
           height="100vh"
@@ -65,7 +63,7 @@ const PurchaseTransactions = () => {
           }}
         >
           <DataGrid
-            rows={purchaseTransactions}
+            rows={giftTransactions}
             columns={columns}
             getRowId={(row) => row.id}
             components={{ Toolbar: GridToolbar }}
@@ -75,4 +73,4 @@ const PurchaseTransactions = () => {
     );
   };
   
-  export default PurchaseTransactions;
+  export default GiftTransactions;

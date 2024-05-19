@@ -2,27 +2,25 @@ import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { Box, Typography, useTheme, IconButton, Button } from "@mui/material";
 import { DataGrid, GridToolbar, GridActionsCell } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
-import Header from "../../components/Header";
+import { tokens } from "../../../theme";
+import Header from "../../../components/Header";
 import { format } from "date-fns";
 
-const Purchasers = () => {
+const FiledInheritanceTaxReturns = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
   
-    const [purchasers, setPurchasers] = useState([]);
+    const [inheritanceReturns, setInheritanceReturns] = useState([]);
   
-    const getPurchasers = async () => {
+    const getInheritanceReturns = async () => {
       try {
-        const response = await Axios.get("https://smart-tax-api.vercel.app/api/purchasers");
+        const response = await Axios.get("https://smart-tax-api.vercel.app/api/inheritance-returns/filed");
         const data = response.data.map((item) => ({
           ...item,
-          dob: format(new Date(item.dob), "yyyy-MM-dd"),
-          isFirstProperty: item.isFirstProperty ? "Yes" : "No",
-          isSriLankanResident: item.isSriLankanResident ? "Yes" : "No",
-          isCompany: item.isCompany ? "Yes" : "No",
+          submitDate: format(new Date(item.submitDate), "yyyy-MM-dd"),
+          deadlineDate: format(new Date(item.deadlineDate), "yyyy-MM-dd"),
         }));
-        setPurchasers(data);
+        setInheritanceReturns(data);
       } catch (error) {
         console.log(error);
       }
@@ -30,25 +28,25 @@ const Purchasers = () => {
   
     // change title
     useEffect(() => {
-      document.title = "Purchasers | SMART TAX";
-      getPurchasers();
+      document.title = "Filed Inheritance Returns | SMART TAX";
+      getInheritanceReturns();
     }, []);
   
     const columns = [
       { field: "id", headerName: "ID", flex: 0.2 },
-      { field: "purchaserName", headerName: "PURCHASER NAME", flex: 0.4 },
-      { field: "nic", headerName: "NIC", flex: 0.3 },
-      { field: "dob", headerName: "DATE OF BIRTH", flex: 0.5 },
-      { field: "isFirstProperty", headerName: "FIRST TIME BUYER", flex: 0.3 },
-      { field: "isSriLankanResident", headerName: "SRI LANKAN", flex: 0.3 },
-      { field: "isCompany", headerName: "COMPANY", flex: 0.3 },
+      { field: "type", headerName: "TYPE", flex: 0.2 },
+      { field: "taxDue", headerName: "TAX DUE", flex: 0.3 },
+      { field: "submitDate", headerName: "SUBMIT DATE", flex: 0.3 },
+      { field: "deadlineDate", headerName: "DEADLINE DATE", flex: 0.3 },
+      { field: "status", headerName: "STATUS", flex: 0.3 },
+      { field: "transactionId", headerName: "TRANSACTION ID", flex: 0.3 },
       { field: "agentId", headerName: "AGENT ID", flex: 0.3 }
     ];
   
     return (
       
       <Box>
-        <Header title="Purchasers" subtitle="All Purchasers Data" />
+        <Header title="Inheritance Returns" subtitle="All FILED Inheritance Returns Data" />
         <Box
           m="0 0 5px 5px"
           height="100vh"
@@ -66,7 +64,7 @@ const Purchasers = () => {
           }}
         >
           <DataGrid
-            rows={purchasers}
+            rows={inheritanceReturns}
             columns={columns}
             getRowId={(row) => row.id}
             components={{ Toolbar: GridToolbar }}
@@ -76,4 +74,4 @@ const Purchasers = () => {
     );
   };
   
-  export default Purchasers;
+  export default FiledInheritanceTaxReturns;
