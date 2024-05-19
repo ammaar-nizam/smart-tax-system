@@ -151,7 +151,7 @@ const EstateDutyTax = () => {
   const onFinalSubmit = async () => {
     try {
       const purchaserResponse = await axios.post(
-        "http://localhost:8000/api/purchasers/create",
+        "https://smart-tax-api.vercel.app/api/purchasers/create",
         formData.purchaser, {
           headers: {
             'Authorization': 'Bearer ' + accessToken,
@@ -163,11 +163,11 @@ const EstateDutyTax = () => {
     } finally {
       try {
         const retrievedPurchaserId = await axios.get(
-          `http://localhost:8000/api/purchasers/nic?purchaserNIC=${formData.purchaser.purchaserNIC}`
+          `https://smart-tax-api.vercel.app/api/purchasers/nic?purchaserNIC=${formData.purchaser.purchaserNIC}`
         );
         formData.purchaseTransaction.purchaserId = retrievedPurchaserId.data.id;
         const purchaseTransactionResponse = await axios.post(
-          "http://localhost:8000/api/purchase-transactions/create",
+          "https://smart-tax-api.vercel.app/api/purchase-transactions/create",
           formData.purchaseTransaction
         );
       } catch (error) {
@@ -175,7 +175,7 @@ const EstateDutyTax = () => {
       } finally {
         try {
           const retrievedPurchaseTransactionId = await axios.get(
-            `http://localhost:8000/api/purchase-transactions/transaction?propertyAddress=${formData.purchaseTransaction.propertyAddress}&vendorNIC=${formData.purchaseTransaction.vendorNIC}`
+            `https://smart-tax-api.vercel.app/api/purchase-transactions/transaction?propertyAddress=${formData.purchaseTransaction.propertyAddress}&vendorNIC=${formData.purchaseTransaction.vendorNIC}`
           );
           console.log(retrievedPurchaseTransactionId.data.id);
           formData.edtReturn.transactionId =
@@ -183,7 +183,7 @@ const EstateDutyTax = () => {
           formData.edtReturn.taxDue = taxResult.totalTax;
           // Call API to create an EDT return
           const edtReturnResponse = await axios.post(
-            "http://localhost:8000/api/edt-returns/create",
+            "https://smart-tax-api.vercel.app/api/edt-returns/create",
             formData.edtReturn
           );
           alert("Tax return submitted successfully!");

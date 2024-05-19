@@ -17,7 +17,7 @@ const RegisterForm = () => {
     console.log(data);
     setLoading(true);
     try {
-      await axios.post("http://localhost:8000/api/agents/request", data);
+      await axios.post("https://smart-tax-api.vercel.app/api/agents/request", data);
       alert("Registration request received! We will contact you soon.");
       reset();
       window.location.href = "/";

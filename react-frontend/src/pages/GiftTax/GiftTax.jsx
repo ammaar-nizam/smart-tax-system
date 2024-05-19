@@ -149,7 +149,7 @@ const GiftTax = () => {
   const onFinalSubmit = async () => {
     try {
       const receiverResponse = await axios.post(
-        "http://localhost:8000/api/receivers/create",
+        "https://smart-tax-api.vercel.app/api/receivers/create",
         formData.receiver,
         {
           headers: {
@@ -162,11 +162,11 @@ const GiftTax = () => {
     } finally {
       try {
         const retrievedGiftTransactionId = await axios.get(
-          `http://localhost:8000/api/receivers/nic?receiverNIC=${formData.receiver.receiverNIC}`
+          `https://smart-tax-api.vercel.app/api/receivers/nic?receiverNIC=${formData.receiver.receiverNIC}`
         );
         formData.giftTransaction.receiverId = retrievedGiftTransactionId.data.id;
         const giftTransactionResponse = await axios.post(
-          "http://localhost:8000/api/gift-transactions/create",
+          "https://smart-tax-api.vercel.app/api/gift-transactions/create",
           formData.giftTransaction
         );
       } catch (error) {
@@ -174,7 +174,7 @@ const GiftTax = () => {
       } finally {
         try {
           const retrievedGiftTransactionId = await axios.get(
-            `http://localhost:8000/api/gift-transactions/transaction?propertyAddress=${formData.giftTransaction.propertyAddress}&giverNIC=${formData.giftTransaction.giverNIC}`
+            `https://smart-tax-api.vercel.app/api/gift-transactions/transaction?propertyAddress=${formData.giftTransaction.propertyAddress}&giverNIC=${formData.giftTransaction.giverNIC}`
           );
           console.log(retrievedGiftTransactionId.data.id);
           formData.giftReturn.transactionId =
@@ -182,7 +182,7 @@ const GiftTax = () => {
           formData.giftReturn.taxDue = taxResult.totalTax;
           // Call API to create a Gift return
           const giftReturnResponse = await axios.post(
-            "http://localhost:8000/api/gift-returns/create",
+            "https://smart-tax-api.vercel.app/api/gift-returns/create",
             formData.giftReturn
           );
           alert("Tax return submitted successfully!");

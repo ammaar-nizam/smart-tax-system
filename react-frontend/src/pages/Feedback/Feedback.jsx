@@ -34,7 +34,7 @@ const Feedback = () => {
     event.preventDefault();
     setLoading(true);
     axios
-      .post("http://localhost:8000/api/feedbacks/create", formData)
+      .post("https://smart-tax-api.vercel.app/api/feedbacks/create", formData)
       .then(() => {
         alert("Feedback sent!");
         setFormData({

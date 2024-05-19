@@ -17,7 +17,7 @@ import EducationalResources from "./pages/EducationalResources/EducationalResour
 import RegisterForm from "./pages/Register/Register";
 import PaymentForm from './pages/Payment/Payment';
 
-const stripePromise = loadStripe(process.env.PUBLISHABLE_KEY);
+const stripePromise = loadStripe("pk_test_51PI2ZjSJLIdqTI05GmF4edWPhzL6bgFPFPaBTB6pv6VH8MpUhQZQa0iIV3Aanh4S9tKwpe6DnZ45ZWvuP1rLwmyi00gEQY2vxL");
 
 function App() {
   return (
